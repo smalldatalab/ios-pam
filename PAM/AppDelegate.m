@@ -7,13 +7,18 @@
 //
 
 #import "AppDelegate.h"
+#import "PAMViewController.h"
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    // Override point for customization after application launch.
+    
+    PAMViewController *pvc = [[PAMViewController alloc] init];
+    UINavigationController *navcon = [[UINavigationController alloc] initWithRootViewController:pvc];
+    self.window.rootViewController = navcon;
+    
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     return YES;

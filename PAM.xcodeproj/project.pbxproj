@@ -19,6 +19,7 @@
 		1E0BB51219F709E300877208 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E0BB4FA19F709E300877208 /* UIKit.framework */; };
 		1E0BB51A19F709E300877208 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1E0BB51819F709E300877208 /* InfoPlist.strings */; };
 		1E0BB51C19F709E300877208 /* PAMTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E0BB51B19F709E300877208 /* PAMTests.m */; };
+		1E0BB52A19F70D6F00877208 /* PAMViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E0BB52919F70D6F00877208 /* PAMViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +49,8 @@
 		1E0BB51719F709E300877208 /* PAMTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PAMTests-Info.plist"; sourceTree = "<group>"; };
 		1E0BB51919F709E300877208 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1E0BB51B19F709E300877208 /* PAMTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PAMTests.m; sourceTree = "<group>"; };
+		1E0BB52819F70D6F00877208 /* PAMViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PAMViewController.h; sourceTree = "<group>"; };
+		1E0BB52919F70D6F00877208 /* PAMViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PAMViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,6 +110,8 @@
 		1E0BB4FC19F709E300877208 /* PAM */ = {
 			isa = PBXGroup;
 			children = (
+				1E0BB52819F70D6F00877208 /* PAMViewController.h */,
+				1E0BB52919F70D6F00877208 /* PAMViewController.m */,
 				1E0BB50519F709E300877208 /* AppDelegate.h */,
 				1E0BB50619F709E300877208 /* AppDelegate.m */,
 				1E0BB50819F709E300877208 /* Images.xcassets */,
@@ -240,6 +245,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1E0BB50719F709E300877208 /* AppDelegate.m in Sources */,
+				1E0BB52A19F70D6F00877208 /* PAMViewController.m in Sources */,
 				1E0BB50319F709E300877208 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
