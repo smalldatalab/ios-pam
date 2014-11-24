@@ -8,6 +8,13 @@
 
 #import "AppDelegate.h"
 #import "PAMViewController.h"
+#import "LoginViewController.h"
+
+@interface AppDelegate ()
+
+@property (nonatomic, strong) LoginViewController *loginViewController;
+
+@end
 
 @implementation AppDelegate
 
@@ -15,13 +22,33 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
-    PAMViewController *pvc = [[PAMViewController alloc] init];
-    UINavigationController *navcon = [[UINavigationController alloc] initWithRootViewController:pvc];
-    self.window.rootViewController = navcon;
+    UIViewController *root = nil;
+    if (1) {
+        self.loginViewController = [[LoginViewController alloc] init];
+        root = self.loginViewController;
+    }
+    else {
+        PAMViewController *pvc = [[PAMViewController alloc] init];
+        UINavigationController *navcon = [[UINavigationController alloc] initWithRootViewController:pvc];
+        root = navcon;
+    }
+    
+    self.window.rootViewController = root;
     
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
+    
     return YES;
+}
+
+- (void)userDidLogin
+{
+    PAMViewController *pvc = [[PAMViewController alloc] init];
+    UINavigationController *navcon = [[UINavigationController alloc] initWithRootViewController:pvc];
+    [UIView transitionFromView:self.loginViewController.view toView:navcon.view duration:0.35 options:UIViewAnimationOptionTransitionCrossDissolve completion:^(BOOL finished) {
+        self.window.rootViewController = navcon;
+        self.loginViewController = nil;
+    }];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -44,6 +71,9 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+//    [self.window.rootViewController presentViewController:[[LoginViewController alloc] init]
+//                                                 animated:NO
+//                                               completion:nil];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application

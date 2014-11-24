@@ -1,29 +1,35 @@
 //
-//  PAMViewController.m
-//  PAMGridTest
+//  PAMImageCell.h
+//  PAM
 //
-//  Created by Donald Hu on 6/8/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Created by Charles Forkish on 11/22/14.
+//  Copyright (c) 2014 Charlie Forkish. All rights reserved.
 //
 
 #import "PAMViewController.h"
+#import "PAMImageCell.h"
+#import "UIView+AutoLayoutHelpers.h"
+#import "LoginViewController.h"
+
+#define NUM_ROWS 4
+#define NUM_COLS 4
+
+CGFloat const kGridMargin = 5.0;
 
 @interface PAMViewController () <UIActionSheetDelegate>
 @property (strong, nonatomic) NSMutableArray *buttonArray;
 @property (strong, nonatomic) UIImageView *checkMarkView;
 @property (strong, nonatomic) UIButton *selectedButton;
 @property (strong, nonatomic) NSMutableArray *pamMeasures;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *submitButton;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *reloadButton;
+
+@property (nonatomic, strong) UIBarButtonItem *logoutButton;
+@property (nonatomic, strong) UIBarButtonItem *submitButton;
+@property (nonatomic, strong) NSArray *imageCells;
+@property (nonatomic, strong) PAMImageCell *selectedCell;
+
 @end
 
 @implementation PAMViewController
-@synthesize buttonArray = _buttonArray;
-@synthesize checkMarkView = _checkMarkView;
-@synthesize selectedButton = _selectedButton;
-@synthesize submitButton = _submitButton;
-@synthesize reloadButton = _reloadButton;
-@synthesize submitDictionary = _submitDictionary;
 
 - (void)viewDidLoad
 {
@@ -31,51 +37,101 @@
     
     self.title = @"PAM";
     
-    self.buttonArray = [[NSMutableArray alloc] init];
     [self createPAMGrid];
-    [self createPamMeasures];
+    
+    UIBarButtonItem *logoutButton = [[UIBarButtonItem alloc] initWithTitle:@"Logout"
+                                                                     style:UIBarButtonItemStylePlain
+                                                                    target:self
+                                                                    action:@selector(logout)];
+    
+    UIBarButtonItem *reminderButton = [[UIBarButtonItem alloc] initWithTitle:@"Reminder"
+                                                                 style:UIBarButtonItemStylePlain
+                                                                target:self
+                                                                action:@selector(presentReminderViewController)];
+    self.logoutButton = logoutButton;
+    
+    self.navigationItem.leftBarButtonItem = logoutButton;
+    self.navigationItem.rightBarButtonItem = reminderButton;
+    
+    UIBarButtonItem *spacer1 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    UIBarButtonItem *spacer2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    UIBarButtonItem *reloadButton = [[UIBarButtonItem alloc] initWithTitle:@"Reload Images"
+                                                                     style:UIBarButtonItemStylePlain
+                                                                    target:self
+                                                                    action:@selector(reloadImages)];
+    
+    
+    UIBarButtonItem *submitButton = [[UIBarButtonItem alloc] initWithTitle:@"Submit"
+                                                                     style:UIBarButtonItemStylePlain
+                                                                    target:self
+                                                                    action:@selector(submit)];
+    submitButton.enabled = NO;
+    self.submitButton = submitButton;
+    
+    self.toolbarItems = @[reloadButton, spacer1, submitButton];
+    self.navigationController.toolbarHidden = NO;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    // without this the navigation bar waits until the view has appeared
+    // to adjust for the status bar
+    [self.navigationController.navigationBar.layer removeAllAnimations];
+}
+
+- (void)presentReminderViewController
+{
+    
 }
 
 // Creates the PAM grid, randomizing the picture (but not its location)
 // The buttons are created and added to self.buttonArray (for easier access to the buttons)
 - (void)createPAMGrid
 {
-    NSString *selectedImageName = [self.submitDictionary objectForKey:@"4"];
-    int imageIndex = 0;
-    if(selectedImageName) {
-        int location = [selectedImageName rangeOfString:@"_"].location;
-        imageIndex = [[selectedImageName substringWithRange:NSMakeRange(0,location)] intValue];
+    UILabel *instructions = [[UILabel alloc] init];
+    instructions.text = @"Select the photo that best captures how you feel right now:";
+    instructions.numberOfLines = 0;
+    [self.view addSubview:instructions];
+    [self.view constrainChildToDefaultHorizontalInsets:instructions];
+    [instructions positionBelowElementWithDefaultMargin:self.topLayoutGuide];
+    [instructions sizeToFit];
+    
+    NSMutableArray *cells = [NSMutableArray arrayWithCapacity:NUM_ROWS*NUM_COLS];
+    UIView *layoutAnchor = instructions;
+    int index = 0;
+    
+    for (int y = 0; y < NUM_ROWS; y++) {
+        
+        NSMutableArray *row = [NSMutableArray arrayWithCapacity:NUM_COLS];
+        for (int x = 0; x < NUM_COLS; x++) {
+            PAMImageCell *cell = [[PAMImageCell alloc] initWithIndex:index++];
+            [cell addTarget:self action:@selector(imageCellPressed:) forControlEvents:UIControlEventTouchUpInside];
+            [self.view addSubview:cell];
+            [cell positionBelowElement:layoutAnchor margin:kGridMargin];
+            [cell constrainEqualWidthAndHeight];
+            
+            [row addObject:cell];
+            [cells addObject:cell];
+        }
+        
+        [self.view constrainChildrenToEqualWidths:row];
+        [self.view layoutChildren:row horizontal:YES margin:kGridMargin guides:nil];
+        layoutAnchor = row[0];
     }
     
-    NSInteger i = 0;
-    for (NSInteger y = 0; y < 4; y++) {
-        for (NSInteger x = 0; x < 4; x++) {
-            i++;
-            
-            CGRect frame = CGRectMake(5 + x * 79, 50 + y * 79, 74, 74);
-            UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-            button.frame = frame;
-            
-            NSString *imageName = [NSString stringWithFormat:@"%d_%d",i,rand() % 3 + 1];
-            
-            if(imageIndex == i) imageName = selectedImageName;
-            
-            button.imageEdgeInsets = UIEdgeInsetsMake(48, 48, 4, 4);
-            button.titleLabel.alpha = 0.0;
-            
-            [button setBackgroundImage:[UIImage imageNamed:imageName] forState:UIControlStateNormal];
-            [button setTitle:imageName forState:UIControlStateNormal];
-            [button addTarget:self
-                       action:@selector(imageSelected:)
-             forControlEvents:UIControlEventTouchUpInside];
-            
-            [self.view addSubview:button];
-            
-            if(imageIndex == i) [self imageSelected:button];
-            
-            [self.buttonArray addObject:button];
-        }
+    self.imageCells = cells;
+}
+
+- (void)imageCellPressed:(PAMImageCell *)cell
+{
+    for (PAMImageCell *cell in self.imageCells) {
+        cell.selected = NO;
     }
+    cell.selected = YES;
+    self.selectedCell = cell;
+    self.submitButton.enabled = YES;
 }
 
 // If an image is selected, hilight it and set the self.selectedButton to that button. Also, unhilight all other buttons
@@ -100,17 +156,25 @@
     [self.view addSubview:self.checkMarkView];
 }
 
-// Generates a new PAM grid (and unselected any selected image)
--(IBAction)reloadImages
+// Load new image in each unselected cell
+-(void)reloadImages
 {
-    self.selectedButton.layer.borderWidth = 0.0;
-    self.selectedButton = nil;
-    [self createPAMGrid];
+    for (PAMImageCell *cell in self.imageCells) {
+        if (!cell.selected) [cell shuffleImage];
+    }
+}
+
+- (void)logout
+{
+    [self presentViewController:[[LoginViewController alloc] init] animated:YES completion:nil];
 }
 
 // Checks the make sure that a PAM image was selected, if it is, send its ID to the server.
--(IBAction)submit:(id)sender
+-(void)submit
 {
+    [self imageCellPressed:nil];
+    self.submitButton.enabled = NO;
+    [self reloadImages];
 //    if(self.selectedButton == nil) {
 //        [SVProgressHUD showErrorWithStatus:@"Select an Image"];
 //        return;
@@ -121,8 +185,8 @@
 
 // Converts the PAM image name to its ID and sends its ID to the server (along with user ID).
 // Disables input so that multiple PAM images are not selected and sent at once.
-//-(void)uploadData
-//{
+-(void)uploadData
+{
 //    self.reloadButton.enabled = NO;
 //    self.submitButton.enabled = NO;
 //    [SVProgressHUD showWithStatus:@"Submitting"];
@@ -148,7 +212,7 @@
 //    [NSURLConnection connectionWithRequest:request delegate:self];
 //    
 //    [self toEnableInteraction:NO];
-//}
+}
 
 // Return the measures for mood name, valence, arousal, valence_pa, and valence_na
 // The dictionary has the key set as the names of the values
