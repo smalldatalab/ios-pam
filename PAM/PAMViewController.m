@@ -16,6 +16,7 @@
 #define NUM_COLS 4
 
 CGFloat const kGridMargin = 5.0;
+NSString * const kLastSubmitDateKey = @"lastSubmitDate";
 
 @interface PAMViewController () <UIActionSheetDelegate>
 @property (strong, nonatomic) NSMutableArray *buttonArray;
@@ -27,6 +28,7 @@ CGFloat const kGridMargin = 5.0;
 @property (nonatomic, strong) UIBarButtonItem *submitButton;
 @property (nonatomic, strong) NSArray *imageCells;
 @property (nonatomic, strong) PAMImageCell *selectedCell;
+@property (nonatomic, strong) UILabel *lastSubmitLabel;
 
 @end
 
@@ -40,8 +42,6 @@ CGFloat const kGridMargin = 5.0;
     [self.view setBackgroundColor:bgColor];
     
     self.title = @"PAM";
-    
-    [self createPAMGrid];
     
     UIBarButtonItem *logoutButton = [[UIBarButtonItem alloc] initWithTitle:@"Logout"
                                                                      style:UIBarButtonItemStylePlain
@@ -74,6 +74,10 @@ CGFloat const kGridMargin = 5.0;
     
     self.toolbarItems = @[submitButton, spacer1, reloadButton];
     self.navigationController.toolbarHidden = NO;
+    
+    
+    [self createPAMGrid];
+    [self updateLastSubmitLabel];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -83,6 +87,46 @@ CGFloat const kGridMargin = 5.0;
     // without this the navigation bar waits until the view has appeared
     // to adjust for the status bar
     [self.navigationController.navigationBar.layer removeAllAnimations];
+}
+
+- (void)updateLastSubmitLabel
+{
+    UILabel *oldLabel = nil;
+    if (self.lastSubmitLabel != nil) oldLabel = self.lastSubmitLabel;
+    
+    NSDate *date = [[NSUserDefaults standardUserDefaults] objectForKey:kLastSubmitDateKey];
+    if (date == nil) return;
+    
+    UILabel *newLabel = [[UILabel alloc] init];
+    newLabel.textAlignment = NSTextAlignmentCenter;
+    newLabel.font = [UIFont systemFontOfSize:12.0];
+    newLabel.text = [NSString stringWithFormat:@"Last submit: %@", [self formattedDate:date]];
+    newLabel.alpha = 0.0;
+    self.lastSubmitLabel = newLabel;
+    
+    [self.view addSubview:newLabel];
+    [self.view constrainChildToDefaultHorizontalInsets:newLabel];
+    [newLabel positionBelowElementWithDefaultMargin:self.imageCells.lastObject];
+    
+    [UIView animateWithDuration:0.5 animations:^{
+        newLabel.alpha = 1.0;
+        if (oldLabel) oldLabel.alpha = 0.0;
+    } completion:^(BOOL finished) {
+        if (oldLabel) [oldLabel removeFromSuperview];
+    }];
+}
+
+- (NSString *)formattedDate:(NSDate *)date
+{
+    static NSDateFormatter *dateFormatter = nil;
+    if (!dateFormatter) {
+        NSString *formatString = [NSDateFormatter dateFormatFromTemplate:@"MMMM d h:m" options:0
+                                                                  locale:[NSLocale currentLocale]];
+        dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:formatString];
+    }
+    
+    return [dateFormatter stringFromDate:date];
 }
 
 - (void)presentReminderViewController
@@ -179,8 +223,10 @@ CGFloat const kGridMargin = 5.0;
 -(void)submit
 {
     [self imageCellPressed:nil];
+    [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kLastSubmitDateKey];
     self.submitButton.enabled = NO;
     [self reloadImages];
+    [self updateLastSubmitLabel];
 //    if(self.selectedButton == nil) {
 //        [SVProgressHUD showErrorWithStatus:@"Select an Image"];
 //        return;
