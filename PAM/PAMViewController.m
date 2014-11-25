@@ -222,13 +222,13 @@ CGFloat const kGridMargin = 5.0;
 
 // Return the measures for mood name, valence, arousal, valence_pa, and valence_na
 // The dictionary has the key set as the names of the values
--(NSDictionary *)getCellData
-{
-    NSString *imageName = self.selectedButton.titleLabel.text;
-    int location = [imageName rangeOfString:@"_"].location;
-    int cellNumber = [[imageName substringWithRange:NSMakeRange(0,location)] intValue];
-    return [self.pamMeasures objectAtIndex:cellNumber];
-}
+//-(NSDictionary *)getCellData
+//{
+//    NSString *imageName = self.selectedButton.titleLabel.text;
+//    int location = [imageName rangeOfString:@"_"].location;
+//    int cellNumber = [[imageName substringWithRange:NSMakeRange(0,location)] intValue];
+//    return [self.pamMeasures objectAtIndex:cellNumber];
+//}
 
 //// Makes sure that the information is recieved and enable input.
 //- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
@@ -256,35 +256,35 @@ CGFloat const kGridMargin = 5.0;
 
 // Creates the pamMeasures array (the dictionary containing the information will be at the index
 // equal to the cell ID).
--(void)createPamMeasures
-{
-    self.pamMeasures = [[NSMutableArray alloc] init];
-    NSMutableArray *measureArray = [[NSMutableArray alloc] initWithObjects:
-                                    @"0",@"0",@"0",@"0",@"0",@"0",
-                                    @"1",@"afraid",@"-2",@"4",@"1",@"4",
-                                    @"2",@"tense",@"-1",@"4",@"2",@"3",
-                                    @"3",@"excited",@"1",@"4",@"3",@"2",
-                                    @"4",@"delighted",@"2",@"4",@"4",@"1",
-                                    @"5",@"frustrated",@"-2",@"3",@"1",@"4",
-                                    @"6",@"angry",@"-1",@"3",@"2",@"3",
-                                    @"7",@"happy",@"1",@"3",@"3",@"2",
-                                    @"8",@"glad",@"2",@"3",@"4",@"1",
-                                    @"9",@"miserable",@"-2",@"2",@"1",@"4",
-                                    @"10",@"sad",@"-1",@"2",@"2",@"3",
-                                    @"11",@"calm",@"1",@"2",@"3",@"2",
-                                    @"12",@"satisfied",@"2",@"2",@"4",@"1",
-                                    @"13",@"gloomy",@"-2",@"1",@"1",@"4",
-                                    @"14",@"tired",@"-1",@"1",@"2",@"3",
-                                    @"15",@"sleepy",@"1",@"1",@"3",@"2",
-                                    @"16",@"serene",@"2",@"1",@"4",@"1",
-                                    nil];
-    
-    NSArray *keyArray = [[NSArray alloc] initWithObjects:
-                         @"id",@"name",@"valence",@"arousal",@"valence_pa",@"valence_na",nil];
-    for(int i = 0; i<[measureArray count] / 6; i++) {
-        NSRange range = NSMakeRange(i * 6, 6);
-        NSDictionary *pamCellMeasure = [[NSDictionary alloc] initWithObjects:[measureArray subarrayWithRange:range] forKeys:keyArray];
-        [self.pamMeasures addObject:pamCellMeasure];
-    }
-}
+//-(void)createPamMeasures
+//{
+//    self.pamMeasures = [[NSMutableArray alloc] init];
+//    NSMutableArray *measureArray = [[NSMutableArray alloc] initWithObjects:
+//                                    @"0",@"0",@"0",@"0",@"0",@"0",
+//                                    @"1",@"afraid",@"-2",@"4",@"1",@"4",
+//                                    @"2",@"tense",@"-1",@"4",@"2",@"3",
+//                                    @"3",@"excited",@"1",@"4",@"3",@"2",
+//                                    @"4",@"delighted",@"2",@"4",@"4",@"1",
+//                                    @"5",@"frustrated",@"-2",@"3",@"1",@"4",
+//                                    @"6",@"angry",@"-1",@"3",@"2",@"3",
+//                                    @"7",@"happy",@"1",@"3",@"3",@"2",
+//                                    @"8",@"glad",@"2",@"3",@"4",@"1",
+//                                    @"9",@"miserable",@"-2",@"2",@"1",@"4",
+//                                    @"10",@"sad",@"-1",@"2",@"2",@"3",
+//                                    @"11",@"calm",@"1",@"2",@"3",@"2",
+//                                    @"12",@"satisfied",@"2",@"2",@"4",@"1",
+//                                    @"13",@"gloomy",@"-2",@"1",@"1",@"4",
+//                                    @"14",@"tired",@"-1",@"1",@"2",@"3",
+//                                    @"15",@"sleepy",@"1",@"1",@"3",@"2",
+//                                    @"16",@"serene",@"2",@"1",@"4",@"1",
+//                                    nil];
+//    
+//    NSArray *keyArray = [[NSArray alloc] initWithObjects:
+//                         @"id",@"name",@"valence",@"arousal",@"valence_pa",@"valence_na",nil];
+//    for(int i = 0; i<[measureArray count] / 6; i++) {
+//        NSRange range = NSMakeRange(i * 6, 6);
+//        NSDictionary *pamCellMeasure = [[NSDictionary alloc] initWithObjects:[measureArray subarrayWithRange:range] forKeys:keyArray];
+//        [self.pamMeasures addObject:pamCellMeasure];
+//    }
+//}
 @end
