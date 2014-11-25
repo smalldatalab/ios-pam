@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>98B969DE-BB45-458C-9323-025DD43D5C8B</string>
+	<key>IDESourceControlProjectName</key>
+	<string>PAM</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>091E09210FD78AFBF90DE870FC06BC93C5CC870D</key>
+		<string>https://github.com/cforkish/PAM_ios.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>PAM.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>091E09210FD78AFBF90DE870FC06BC93C5CC870D</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/cforkish/PAM_ios.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>091E09210FD78AFBF90DE870FC06BC93C5CC870D</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>091E09210FD78AFBF90DE870FC06BC93C5CC870D</string>
+			<key>IDESourceControlWCCName</key>
+			<string>PAM</string>
+		</dict>
+	</array>
+</dict>
+</plist>

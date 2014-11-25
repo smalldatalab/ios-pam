@@ -10,6 +10,7 @@
 #import "PAMImageCell.h"
 #import "UIView+AutoLayoutHelpers.h"
 #import "LoginViewController.h"
+#import "ReminderViewController.h"
 
 #define NUM_ROWS 4
 #define NUM_COLS 4
@@ -35,6 +36,9 @@ CGFloat const kGridMargin = 5.0;
 {
     [super viewDidLoad];
     
+    UIColor* bgColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"ipad-BG-pattern"]];
+    [self.view setBackgroundColor:bgColor];
+    
     self.title = @"PAM";
     
     [self createPAMGrid];
@@ -54,7 +58,7 @@ CGFloat const kGridMargin = 5.0;
     self.navigationItem.rightBarButtonItem = reminderButton;
     
     UIBarButtonItem *spacer1 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    UIBarButtonItem *spacer2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+//    UIBarButtonItem *spacer2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     UIBarButtonItem *reloadButton = [[UIBarButtonItem alloc] initWithTitle:@"Reload Images"
                                                                      style:UIBarButtonItemStylePlain
                                                                     target:self
@@ -68,7 +72,7 @@ CGFloat const kGridMargin = 5.0;
     submitButton.enabled = NO;
     self.submitButton = submitButton;
     
-    self.toolbarItems = @[reloadButton, spacer1, submitButton];
+    self.toolbarItems = @[submitButton, spacer1, reloadButton];
     self.navigationController.toolbarHidden = NO;
 }
 
@@ -83,7 +87,9 @@ CGFloat const kGridMargin = 5.0;
 
 - (void)presentReminderViewController
 {
-    
+    ReminderViewController *vc = [[ReminderViewController alloc] init];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 // Creates the PAM grid, randomizing the picture (but not its location)
