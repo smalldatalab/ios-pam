@@ -10,7 +10,14 @@
 #import "UIView+AutoLayoutHelpers.h"
 #import "AppDelegate.h"
 
-@interface LoginViewController () <UITextFieldDelegate>
+#import <GooglePlus/GooglePlus.h>
+#import <GoogleOpenSource/GoogleOpenSource.h>
+
+NSString * const kPAMGoogleClientID = @"48636836762-ktb5qaq5seoqn4b73nfua0csual4b8ng.apps.googleusercontent.com";
+NSString * const kPAMGoogleClientSecret = @"7bXtt441dFfwr5g2DopPaHy3";
+NSString * const kOMHServerGoogleClientID = @"48636836762-9p082qvhat6ojtgnhn4najkmkuolaieu.apps.googleusercontent.com";
+
+@interface LoginViewController () <GPPSignInDelegate>
 
 @property (nonatomic, strong) UITextField *userTextField;
 @property (nonatomic, strong) UITextField *passwordTextField;
@@ -19,85 +26,6 @@
 @end
 
 @implementation LoginViewController
-
-//- (void)loadView
-//{
-//    CGRect screenBounds = [UIScreen mainScreen].bounds;
-//    UIView *view = [[UIView alloc] initWithFrame:screenBounds];
-//    view.backgroundColor = [OHMAppConstants ohmageColor];
-//    self.view = view;
-//    
-//    UIView *contentBox = [[UIView alloc] init];
-//    contentBox.backgroundColor = [UIColor whiteColor];
-//    [view addSubview:contentBox];
-//    [view constrainChild:contentBox toHorizontalInsets:UIEdgeInsetsMake(0, kUIViewSmallMargin, 0, kUIViewSmallMargin)];
-//    self.contentBox = contentBox;
-//    
-//    UILabel *header = [[UILabel alloc] init];
-//    header.text = @"PAM";
-//    header.textColor = [OHMAppConstants ohmageColor];
-//    header.font = [OHMAppConstants headerTitleFont];
-//    header.textAlignment = NSTextAlignmentCenter;
-//    [contentBox addSubview:header];
-//    [header constrainToTopInParentWithMargin:kUIViewVerticalMargin];
-//    [contentBox constrainChild:header toHorizontalInsets:kUIViewDefaultInsets];
-//    
-//    UIView *emailField = [OHMUserInterface textFieldWithLabelText:@"E-MAIL" setupBlock:^(UITextField *tf) {
-//        tf.placeholder = @"enter your e-mail";
-//        tf.delegate = self;
-//        tf.autocapitalizationType = UITextAutocapitalizationTypeNone;
-//        self.emailTextField = tf;
-//    }];
-//    
-//    UIView *passwordField = [OHMUserInterface textFieldWithLabelText:@"PASSWORD" setupBlock:^(UITextField *tf) {
-//        tf.placeholder = @"enter your password";
-//        tf.secureTextEntry = YES;
-//        tf.delegate = self;
-//        self.passwordTextField = tf;
-//    }];
-//    
-//    [contentBox addSubview:emailField];
-//    [contentBox addSubview:passwordField];
-//    
-//    [emailField positionBelowElement:header margin:kUIViewVerticalMargin];
-//    [passwordField positionBelowElement:emailField margin:kUIViewVerticalMargin];
-//    
-//    [contentBox constrainChild:emailField toHorizontalInsets:kUIViewDefaultInsets];
-//    [contentBox constrainChild:passwordField toHorizontalInsets:kUIViewDefaultInsets];
-//    
-//    CGFloat buttonWidth = screenBounds.size.width - 2 * kUIViewSmallMargin - 2 * kUIViewHorizontalMargin;
-//    CGSize buttonSize = CGSizeMake(buttonWidth, kUIButtonDefaultHeight);
-//    UIButton *signInButton = [OHMUserInterface buttonWithTitle:@"Sign In"
-//                                                         color:[OHMAppConstants ohmageColor]
-//                                                        target:self
-//                                                        action:@selector(signInButtonPressed:)
-//                                                          size:buttonSize];
-//    signInButton.enabled = (self.emailTextField.text.length > 0 && self.passwordTextField.text.length > 0);
-//    self.signInButton = signInButton;
-//    
-//    [contentBox addSubview:signInButton];
-//    [signInButton positionBelowElement:passwordField margin:kUIViewVerticalMargin];
-//    [signInButton centerHorizontallyInView:contentBox];
-//    [signInButton constrainToBottomInParentWithMargin:kUIViewVerticalMargin];
-//    
-//    UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-//    [view addSubview:activityIndicator];
-//    [activityIndicator centerHorizontallyInView:view];
-//    [activityIndicator positionBelowElement:contentBox margin:2 * kUIViewVerticalMargin];
-//    activityIndicator.alpha = 0;
-//    self.activityIndicator = activityIndicator;
-//    
-//    
-//    UIButton *cancelButton = [OHMUserInterface buttonWithTitle:@"Cancel"
-//                                                         color:[UIColor clearColor]
-//                                                        target:self
-//                                                        action:@selector(cancelModalPresentationButtonPressed:)
-//                                                          size:buttonSize];
-//    [cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
-//    [view addSubview:cancelButton];
-//    [cancelButton constrainToBottomInParentWithMargin:kUIViewVerticalMargin];
-//    [cancelButton centerHorizontallyInView:view];
-//}
 
 - (void)viewDidLoad
 {
@@ -108,63 +36,23 @@
     
     UILabel *header = [[UILabel alloc] init];
     header.text = @"PAM";
-    header.font = [UIFont fontWithName:@"MarkerFelt-Thin" size:45.0];
+    header.font = [UIFont fontWithName:@"MarkerFelt-Thin" size:65.0];
     header.textAlignment = NSTextAlignmentCenter;
     
-    UIView *frame = [[UIView alloc] init];
-    frame.backgroundColor = [UIColor whiteColor];
-    frame.layer.cornerRadius = 8.0;
-    
-    UIView *separator = [[UIView alloc] init];
-    separator.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.6];
-    
-    UITextField *userField = [[UITextField alloc] init];
-    userField.backgroundColor = [UIColor whiteColor];
-    userField.placeholder = @"Username";
-    userField.delegate = self;
-    userField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    self.userTextField = userField;
-    
-    UITextField *passField = [[UITextField alloc] init];
-    passField.backgroundColor = [UIColor whiteColor];
-    passField.placeholder = @"Password";
-    passField.secureTextEntry = YES;
-    passField.delegate = self;
-    self.passwordTextField = passField;
-    
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
-    button.backgroundColor = [UIColor colorWithRed:0.0 green:110.0/255.0 blue:194.0/255.0 alpha:1.0];
-    button.layer.cornerRadius = 8.0;
-    [button setTitle:@"Log In" forState:UIControlStateNormal];
-    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [button addTarget:self action:@selector(login) forControlEvents:UIControlEventTouchUpInside];
+    GPPSignInButton *googleButton = [[GPPSignInButton alloc] init];
+//    [googleButton addTarget:self action:@selector(login) forControlEvents:UIControlEventTouchUpInside];
+    googleButton.style = kGPPSignInButtonStyleWide;
     
     [self.view addSubview:header];
-    [self.view addSubview:frame];
-    [frame addSubview:userField];
-    [frame addSubview:separator];
-    [frame addSubview:passField];
-    [self.view addSubview:button];
-    
-    [frame constrainHeight:61];
-    [userField constrainHeight:30];
-    [passField constrainHeight:30];
-    [button constrainSize:CGSizeMake(120, 30)];
+    [self.view addSubview:googleButton];
     
     [self.view constrainChildToDefaultHorizontalInsets:header];
-    [self.view constrainChildToDefaultHorizontalInsets:frame];
-    [frame constrainChildToDefaultHorizontalInsets:userField];
-    [frame constrainChild:separator toHorizontalInsets:UIEdgeInsetsZero];
-    [frame constrainChildToDefaultHorizontalInsets:passField];
-    [button centerHorizontallyInView:self.view];
+    [self.view constrainChildToDefaultHorizontalInsets:googleButton];
     
-    [header constrainToTopInParentWithMargin:50];
-    [frame positionBelowElement:header margin:30];
-    [userField constrainToTopInParentWithMargin:0];
-    [passField constrainToBottomInParentWithMargin:0];
-    [separator positionBelowElement:userField margin:0];
-    [separator positionAboveElement:passField margin:0];
-    [button positionBelowElement:frame margin:30];
+    [header constrainToTopInParentWithMargin:80];
+    [googleButton constrainToBottomInParentWithMargin:80];
+    
+    [self configureGoogleSignIn];
 }
 
 - (void)login
@@ -174,6 +62,50 @@
     }
     else {
         [(AppDelegate *)[UIApplication sharedApplication].delegate userDidLogin];
+    }
+}
+
+
+
+#pragma mark - Google Login
+
+- (void)configureGoogleSignIn
+{
+    GPPSignIn *signIn = [GPPSignIn sharedInstance];
+    signIn.shouldFetchGooglePlusUser = YES;
+    signIn.shouldFetchGoogleUserEmail = YES;  // Uncomment to get the user's email
+    
+    // You previously set kClientId in the "Initialize the Google+ client" step
+    signIn.clientID = kPAMGoogleClientID;
+    signIn.homeServerClientID = kOMHServerGoogleClientID;
+
+    signIn.scopes = @[ @"profile" ];            // "profile" scope
+    signIn.delegate = self;
+
+}
+
+- (NSString *)base64EncodedString:(NSString *)string
+{
+    NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
+    return [data base64EncodedStringWithOptions:0];
+}
+
+
+- (void)finishedWithAuth: (GTMOAuth2Authentication *)auth
+                   error: (NSError *) error
+{
+    NSLog(@"Client received google error %@ and auth object %@",error, auth);
+    if (error) {
+
+    }
+    else {
+        NSString *serverCode = [GPPSignIn sharedInstance].homeServerAuthorizationCode;
+        NSLog(@"serverCode: %@", serverCode);
+        NSLog(@"test encode: %@", [self base64EncodedString:[NSString stringWithFormat:@"%@:%@", @"android-app", @"secret"]]);
+        
+        NSString *encodedClientIDAndSecret = [self base64EncodedString:[NSString stringWithFormat:@"%@:%@", kPAMGoogleClientID, kPAMGoogleClientSecret]];
+        
+        [self login];
     }
 }
 

@@ -10,6 +10,8 @@
 #import "PAMViewController.h"
 #import "LoginViewController.h"
 
+#import <GooglePlus/GooglePlus.h>
+
 @interface AppDelegate ()
 
 @property (nonatomic, strong) LoginViewController *loginViewController;
@@ -80,5 +82,16 @@
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
+
+- (BOOL)application: (UIApplication *)application
+            openURL: (NSURL *)url
+  sourceApplication: (NSString *)sourceApplication
+         annotation: (id)annotation {
+    NSLog(@"openURL: %@, source: %@, annotation: %@", url, sourceApplication, annotation);
+    return [GPPURLHandler handleURL:url
+                  sourceApplication:sourceApplication
+                         annotation:annotation];
+}
+
 
 @end
