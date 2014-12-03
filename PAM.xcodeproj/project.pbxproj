@@ -44,6 +44,7 @@
 		1EDFA2991A2DD74300094963 /* AFURLRequestSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EDFA28E1A2DD74300094963 /* AFURLRequestSerialization.m */; };
 		1EDFA29A1A2DD74300094963 /* AFURLResponseSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EDFA2901A2DD74300094963 /* AFURLResponseSerialization.m */; };
 		1EDFA29B1A2DD74300094963 /* AFURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EDFA2921A2DD74300094963 /* AFURLSessionManager.m */; };
+		1EDFA29E1A2DDA9D00094963 /* OMHClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EDFA29D1A2DDA9D00094963 /* OMHClient.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -113,6 +114,8 @@
 		1EDFA2901A2DD74300094963 /* AFURLResponseSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLResponseSerialization.m; sourceTree = "<group>"; };
 		1EDFA2911A2DD74300094963 /* AFURLSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLSessionManager.h; sourceTree = "<group>"; };
 		1EDFA2921A2DD74300094963 /* AFURLSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLSessionManager.m; sourceTree = "<group>"; };
+		1EDFA29C1A2DDA9D00094963 /* OMHClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OMHClient.h; sourceTree = "<group>"; };
+		1EDFA29D1A2DDA9D00094963 /* OMHClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OMHClient.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -192,6 +195,8 @@
 		1E0BB4FC19F709E300877208 /* PAM */ = {
 			isa = PBXGroup;
 			children = (
+				1EDFA29C1A2DDA9D00094963 /* OMHClient.h */,
+				1EDFA29D1A2DDA9D00094963 /* OMHClient.m */,
 				1E0BB50519F709E300877208 /* AppDelegate.h */,
 				1E0BB50619F709E300877208 /* AppDelegate.m */,
 				1EB2C40D1A22318000DC1A06 /* LoginViewController.h */,
@@ -382,6 +387,7 @@
 				1EDFA2931A2DD74300094963 /* AFHTTPRequestOperation.m in Sources */,
 				1EDFA29B1A2DD74300094963 /* AFURLSessionManager.m in Sources */,
 				1E6F83BC1A24A0E700BACC0F /* ReminderViewController.m in Sources */,
+				1EDFA29E1A2DDA9D00094963 /* OMHClient.m in Sources */,
 				1E0BB50319F709E300877208 /* main.m in Sources */,
 				1EDFA2951A2DD74300094963 /* AFHTTPSessionManager.m in Sources */,
 				1EB1AE251A20BB7100FEFA1F /* UIView+AutoLayoutHelpers.m in Sources */,

@@ -10,7 +10,13 @@
 #import "PAMViewController.h"
 #import "LoginViewController.h"
 
-#import <GooglePlus/GooglePlus.h>
+#import "OMHClient.h"
+
+
+NSString * const kPAMGoogleClientID = @"48636836762-ktb5qaq5seoqn4b73nfua0csual4b8ng.apps.googleusercontent.com";
+NSString * const kOMHServerGoogleClientID = @"48636836762-9p082qvhat6ojtgnhn4najkmkuolaieu.apps.googleusercontent.com";
+NSString * const kPAMDSUClientID = @"com.openmhealth.ios.PAM";
+NSString * const kPAMDSUClientSecret = @"Rtg43jkLD7z76c";
 
 @interface AppDelegate ()
 
@@ -23,6 +29,8 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    
+    [self setupOMHClient];
     
     UIViewController *root = nil;
     if (1) {
@@ -41,6 +49,15 @@
     [self.window makeKeyAndVisible];
     
     return YES;
+}
+
+- (void)setupOMHClient
+{
+    OMHClient *client = [OMHClient sharedClient];
+    client.appGoogleClientID = kPAMGoogleClientID;
+    client.serverGoogleClientID = kOMHServerGoogleClientID;
+    client.appDSUClientID = kPAMDSUClientID;
+    client.appDSUClientSecret = kPAMDSUClientSecret;
 }
 
 - (void)userDidLogin
@@ -88,9 +105,9 @@
   sourceApplication: (NSString *)sourceApplication
          annotation: (id)annotation {
     NSLog(@"openURL: %@, source: %@, annotation: %@", url, sourceApplication, annotation);
-    return [GPPURLHandler handleURL:url
-                  sourceApplication:sourceApplication
-                         annotation:annotation];
+    return [[OMHClient sharedClient] handleURL:url
+                             sourceApplication:sourceApplication
+                                    annotation:annotation];
 }
 
 
