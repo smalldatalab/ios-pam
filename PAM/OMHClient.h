@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol OMHLoginDelegate;
+@protocol OMHSignInDelegate;
 
 @interface OMHClient : NSObject
 
@@ -16,24 +16,30 @@
 
 + (UIButton *)googleSignInButton;
 
-@property (nonatomic, weak) id<OMHLoginDelegate> loginDelegate;
+@property (nonatomic, weak) id<OMHSignInDelegate> signInDelegate;
 
 @property (nonatomic, strong) NSString *appGoogleClientID;
 @property (nonatomic, strong) NSString *serverGoogleClientID;
 @property (nonatomic, strong) NSString *appDSUClientID;
 @property (nonatomic, strong) NSString *appDSUClientSecret;
 
+@property (nonatomic, readonly) BOOL isSignedIn;
+
 
 - (BOOL)handleURL:(NSURL *)url
 sourceApplication:(NSString *)sourceApplication
        annotation:(id)annotation;
 
+- (void)signOut;
+
+- (void)updateDataPoint:(NSDictionary *)dataPoint;
+
 @end
 
 
-@protocol OMHLoginDelegate
+@protocol OMHSignInDelegate
 @optional
 
-- (void)OMHClientLoginFinishedWithError:(NSError *)error;
+- (void)OMHClientSignInFinishedWithError:(NSError *)error;
 
 @end

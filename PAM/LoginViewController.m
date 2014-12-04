@@ -11,7 +11,7 @@
 #import "AppDelegate.h"
 #import "OMHClient.h"
 
-@interface LoginViewController () <OMHLoginDelegate>
+@interface LoginViewController () <OMHSignInDelegate>
 
 @end
 
@@ -40,10 +40,10 @@
     [header constrainToTopInParentWithMargin:80];
     [googleButton constrainToBottomInParentWithMargin:80];
     
-    [OMHClient sharedClient].loginDelegate = self;
+    [OMHClient sharedClient].signInDelegate = self;
 }
 
-- (void)OMHClientLoginFinishedWithError:(NSError *)error
+- (void)OMHClientSignInFinishedWithError:(NSError *)error
 {
     if (error != nil) {
         NSLog(@"OMHClientLoginFinishedWithError: %@", error);

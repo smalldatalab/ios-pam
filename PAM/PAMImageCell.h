@@ -10,7 +10,8 @@
 
 @interface PAMImageCell : UIButton
 
-@property (nonatomic) int index;
+@property (nonatomic, readonly) int index;
+@property (nonatomic, readonly) NSString *currentImageID;
 
 - (instancetype)initWithIndex:(int)index;
 - (void)shuffleImage;

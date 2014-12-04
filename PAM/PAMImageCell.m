@@ -23,7 +23,7 @@
 {
     self = [super init];
     if (self) {
-        self.index = index;
+        _index = index;
         [self setupImages];
         [self shuffleImage];
     }
@@ -56,6 +56,11 @@
     
     UIImage *image = self.images[newIdx];
     [self setBackgroundImage:image forState:UIControlStateNormal];
+}
+
+- (NSString *)currentImageID
+{
+    return [NSString stringWithFormat:@"%d_%d", self.index+1, self.currentImageIdx+1];
 }
 
 @end

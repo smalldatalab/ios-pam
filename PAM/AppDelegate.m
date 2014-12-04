@@ -14,7 +14,7 @@
 
 
 NSString * const kPAMGoogleClientID = @"48636836762-ktb5qaq5seoqn4b73nfua0csual4b8ng.apps.googleusercontent.com";
-NSString * const kOMHServerGoogleClientID = @"48636836762-9p082qvhat6ojtgnhn4najkmkuolaieu.apps.googleusercontent.com";
+NSString * const kOMHServerGoogleClientID = @"48636836762-mulldgpmet2r4s3f16s931ea9crcc64m.apps.googleusercontent.com";
 NSString * const kPAMDSUClientID = @"com.openmhealth.ios.PAM";
 NSString * const kPAMDSUClientSecret = @"Rtg43jkLD7z76c";
 
@@ -33,7 +33,7 @@ NSString * const kPAMDSUClientSecret = @"Rtg43jkLD7z76c";
     [self setupOMHClient];
     
     UIViewController *root = nil;
-    if (1) {
+    if (![OMHClient sharedClient].isSignedIn) {
         self.loginViewController = [[LoginViewController alloc] init];
         root = self.loginViewController;
     }

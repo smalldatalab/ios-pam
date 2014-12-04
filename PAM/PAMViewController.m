@@ -11,9 +11,11 @@
 #import "UIView+AutoLayoutHelpers.h"
 #import "LoginViewController.h"
 #import "ReminderViewController.h"
+#import "OMHClient.h"
 
 #define NUM_ROWS 4
 #define NUM_COLS 4
+#define NUM_CELLS (NUM_ROWS*NUM_COLS)
 
 CGFloat const kGridMargin = 5.0;
 NSString * const kLastSubmitDateKey = @"lastSubmitDate";
@@ -57,8 +59,10 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
     self.navigationItem.leftBarButtonItem = logoutButton;
     self.navigationItem.rightBarButtonItem = reminderButton;
     
-    UIBarButtonItem *spacer1 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-//    UIBarButtonItem *spacer2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+                                                                            target:nil
+                                                                            action:nil];
+    
     UIBarButtonItem *reloadButton = [[UIBarButtonItem alloc] initWithTitle:@"Reload Images"
                                                                      style:UIBarButtonItemStylePlain
                                                                     target:self
@@ -72,7 +76,7 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
     submitButton.enabled = NO;
     self.submitButton = submitButton;
     
-    self.toolbarItems = @[submitButton, spacer1, reloadButton];
+    self.toolbarItems = @[submitButton, spacer, reloadButton];
     self.navigationController.toolbarHidden = NO;
     
     
@@ -84,7 +88,7 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
 {
     [super viewWillAppear:animated];
     
-    // without this the navigation bar waits until the view has appeared
+    // without this, the navigation bar waits until the view has appeared
     // to adjust for the status bar
     [self.navigationController.navigationBar.layer removeAllAnimations];
 }
@@ -182,28 +186,8 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
     cell.selected = YES;
     self.selectedCell = cell;
     self.submitButton.enabled = YES;
-}
-
-// If an image is selected, hilight it and set the self.selectedButton to that button. Also, unhilight all other buttons
--(void)imageSelected:(id)sender
-{
-    self.selectedButton.layer.borderWidth = 0.0;
     
-    UIButton *button = (UIButton *)sender;
-    self.selectedButton = button;
-    
-    CALayer *layer = [sender layer];
-    layer.borderWidth = 37;
-    layer.borderColor = [[UIColor colorWithRed:250/255.0 green:250/255.0 blue:250/255.0 alpha:.4] CGColor];
-    
-    [self.checkMarkView removeFromSuperview];
-    self.checkMarkView = [[UIImageView alloc] init];
-    self.checkMarkView.image = [UIImage imageNamed:@"check.png"];
-    self.checkMarkView.frame = CGRectMake(button.frame.origin.x + 48, button.frame.origin.y + 48, 23, 23);
-    
-    [self.submitDictionary setObject:self.selectedButton.titleLabel.text forKey:@"4"];
-    
-    [self.view addSubview:self.checkMarkView];
+    NSLog(@"index: %d, PAM: %@", cell.index, [self dataPointForIndex:cell.index]);
 }
 
 // Load new image in each unselected cell
@@ -216,10 +200,10 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
 
 - (void)logout
 {
+    [[OMHClient sharedClient] signOut];
     [self presentViewController:[[LoginViewController alloc] init] animated:YES completion:nil];
 }
 
-// Checks the make sure that a PAM image was selected, if it is, send its ID to the server.
 -(void)submit
 {
     [self imageCellPressed:nil];
@@ -227,110 +211,97 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
     self.submitButton.enabled = NO;
     [self reloadImages];
     [self updateLastSubmitLabel];
-//    if(self.selectedButton == nil) {
-//        [SVProgressHUD showErrorWithStatus:@"Select an Image"];
-//        return;
-//    } else {
-//        [self uploadData];
-//    }
+    
 }
 
-// Converts the PAM image name to its ID and sends its ID to the server (along with user ID).
-// Disables input so that multiple PAM images are not selected and sent at once.
--(void)uploadData
+
+#pragma mark - PAM Measures
+
+- (NSDictionary *)dataPointForIndex:(int)index
 {
-//    self.reloadButton.enabled = NO;
-//    self.submitButton.enabled = NO;
-//    [SVProgressHUD showWithStatus:@"Submitting"];
-//    
-//    NSString *imageName = self.selectedButton.titleLabel.text;
-//    int location = [imageName rangeOfString:@"_"].location;
-//    int cellNumber = [[imageName substringWithRange:NSMakeRange(0,location)] intValue];
-//    int imageNumber = (cellNumber - 1) * 3 + [[imageName substringWithRange:NSMakeRange(location + 1,location)] intValue];
-//    
-//    NSURL *url = [NSURL URLWithString:@"http://api.cornellhci.org/idl-ema/measures/update"];
-//    NSString *input = [NSString stringWithFormat:@"user_id=%@&pam_image_id=%d&visual_pain=%@&general_pain=%@&relation_pain=%@&sleep_pain=%@",
-//                       [[NSUserDefaults standardUserDefaults] objectForKey:@"id"],
-//                       imageNumber,
-//                       [self.submitDictionary objectForKey:@"0"],
-//                       [self.submitDictionary objectForKey:@"1"],
-//                       [self.submitDictionary objectForKey:@"2"],
-//                       [self.submitDictionary objectForKey:@"3"]];
-//    
-//    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0];
-//    [request setHTTPMethod:@"POST"];
-//    [request setHTTPBody:[input dataUsingEncoding:NSUTF8StringEncoding]];
-//    
-//    [NSURLConnection connectionWithRequest:request delegate:self];
-//    
-//    [self toEnableInteraction:NO];
+    int av = [self affectValenceForIndex:index];
+    int aa = [self affectArousalForIndex:index];
+    int pa = [self positiveAffectForValence:av arousal:aa];
+    int na = [self negativeAffectForValence:av arousal:aa];
+    NSString *mood = [self moodForIndex:index];
+    NSString *timeframe = [self currentTimeFrame];
+    NSString *photoID = [self imageIDForIndex:index];
+    
+    return @{@"affect-valence" : @(av),
+             @"affect-arousal" : @(aa),
+             @"positive_affect" : @(pa),
+             @"negative_affect" : @(na),
+             @"mood" : mood,
+             @"photo_id" : photoID,
+             @"effective_time_frame" : timeframe};
 }
 
-// Return the measures for mood name, valence, arousal, valence_pa, and valence_na
-// The dictionary has the key set as the names of the values
-//-(NSDictionary *)getCellData
-//{
-//    NSString *imageName = self.selectedButton.titleLabel.text;
-//    int location = [imageName rangeOfString:@"_"].location;
-//    int cellNumber = [[imageName substringWithRange:NSMakeRange(0,location)] intValue];
-//    return [self.pamMeasures objectAtIndex:cellNumber];
-//}
-
-//// Makes sure that the information is recieved and enable input.
-//- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-//    self.selectedButton.layer.borderWidth = 0.0;
-//    self.selectedButton = nil;
-//    [self.checkMarkView removeFromSuperview];
-//    [SVProgressHUD showSuccessWithStatus:@"Done!"];
-//    [self toEnableInteraction:YES];
-//    [self.submitDictionary removeAllObjects];
-//    [self.navigationController popToRootViewControllerAnimated:YES];
-//}
-//
-//// If there was an error, display a message and enable input again.
-//- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
-//{
-//    [SVProgressHUD showErrorWithStatus:@"Error. :["];
-//    [self toEnableInteraction:YES];
-//}
-
--(void)toEnableInteraction:(BOOL)toEnable
+- (int)affectValenceForIndex:(int)index
 {
-    self.view.userInteractionEnabled = toEnable;
-    self.navigationController.navigationBar.userInteractionEnabled = toEnable;
+    return (index % NUM_COLS) + 1;
 }
 
-// Creates the pamMeasures array (the dictionary containing the information will be at the index
-// equal to the cell ID).
-//-(void)createPamMeasures
-//{
-//    self.pamMeasures = [[NSMutableArray alloc] init];
-//    NSMutableArray *measureArray = [[NSMutableArray alloc] initWithObjects:
-//                                    @"0",@"0",@"0",@"0",@"0",@"0",
-//                                    @"1",@"afraid",@"-2",@"4",@"1",@"4",
-//                                    @"2",@"tense",@"-1",@"4",@"2",@"3",
-//                                    @"3",@"excited",@"1",@"4",@"3",@"2",
-//                                    @"4",@"delighted",@"2",@"4",@"4",@"1",
-//                                    @"5",@"frustrated",@"-2",@"3",@"1",@"4",
-//                                    @"6",@"angry",@"-1",@"3",@"2",@"3",
-//                                    @"7",@"happy",@"1",@"3",@"3",@"2",
-//                                    @"8",@"glad",@"2",@"3",@"4",@"1",
-//                                    @"9",@"miserable",@"-2",@"2",@"1",@"4",
-//                                    @"10",@"sad",@"-1",@"2",@"2",@"3",
-//                                    @"11",@"calm",@"1",@"2",@"3",@"2",
-//                                    @"12",@"satisfied",@"2",@"2",@"4",@"1",
-//                                    @"13",@"gloomy",@"-2",@"1",@"1",@"4",
-//                                    @"14",@"tired",@"-1",@"1",@"2",@"3",
-//                                    @"15",@"sleepy",@"1",@"1",@"3",@"2",
-//                                    @"16",@"serene",@"2",@"1",@"4",@"1",
-//                                    nil];
-//    
-//    NSArray *keyArray = [[NSArray alloc] initWithObjects:
-//                         @"id",@"name",@"valence",@"arousal",@"valence_pa",@"valence_na",nil];
-//    for(int i = 0; i<[measureArray count] / 6; i++) {
-//        NSRange range = NSMakeRange(i * 6, 6);
-//        NSDictionary *pamCellMeasure = [[NSDictionary alloc] initWithObjects:[measureArray subarrayWithRange:range] forKeys:keyArray];
-//        [self.pamMeasures addObject:pamCellMeasure];
-//    }
-//}
+- (int)affectArousalForIndex:(int)index
+{
+    return NUM_ROWS - index / NUM_ROWS;
+}
+
+- (int)positiveAffectForValence:(int)valence arousal:(int)arousal
+{
+    return 4 * valence + arousal - 4;
+}
+
+- (int)negativeAffectForValence:(int)valence arousal:(int)arousal
+{
+    return 4 * (5 - valence) + arousal - 4;
+}
+
+- (NSString *)moodForIndex:(int)index
+{
+    static NSArray * sMoodArray = nil;
+    if (sMoodArray == nil) {
+        sMoodArray = @[@"afraid",
+                       @"tense",
+                       @"excited",
+                       @"delighted",
+                       @"frustrated",
+                       @"angry",
+                       @"happy",
+                       @"glad",
+                       @"miserable",
+                       @"sad",
+                       @"calm",
+                       @"satisfied",
+                       @"gloomy",
+                       @"tired",
+                       @"sleepy",
+                       @"serene"];
+    }
+    return sMoodArray[index];
+}
+
+- (NSString *)currentTimeFrame
+{
+    return [[self ISO8601Formatter] stringFromDate:[NSDate date]];
+}
+
+- (NSDateFormatter *)ISO8601Formatter
+{
+    static NSDateFormatter *dateFormatter = nil;
+    if (dateFormatter == nil) {
+        dateFormatter = [[NSDateFormatter alloc] init];
+        NSLocale *enUSPOSIXLocale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+        [dateFormatter setLocale:enUSPOSIXLocale];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
+    }
+    return dateFormatter;
+}
+
+- (NSString *)imageIDForIndex:(int)index
+{
+    PAMImageCell *cell = self.imageCells[index];
+    return cell.currentImageID;
+}
+
+
 @end

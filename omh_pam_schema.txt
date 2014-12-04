@@ -1,0 +1,320 @@
+PAM Data:
+
+Valence  1-4
+Arousal 1-4
+Positive Affect 1-16
+Negative Affect 1-16
+‘Mood’ Categorical [described below]
+	1 afraid 1 4 Neg-High
+	2 tense 2 4 Neg-High
+	3 excited 3 4 Pos-High
+	4 delighted 4 4 Pos-High
+	5 frustrated 1 3 Neg-High
+	6 angry 2 3 Neg-High
+	7 happy 3 3 Pos-High
+	8 glad 4 3 Pos-High
+	9 miserable 1 2 Neg-Low
+	10 sad 2 2 Neg-Low
+	11 calm 3 2 Pos-Low
+	12 satisfied 4 2 Pos-Low
+	13 gloomy 1 1 Neg-Low
+	14 tired 2 1 Neg-Low
+	15 sleepy 3 1 Pos-Low
+	16 serene 4 1 Pos-Low 
+
+
+Affect-Valence
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "description": "This schema represents the Valence of affect a person experiences.",
+    "references": [
+        {
+            "description": "??",
+            "url": "??"
+        }
+    ],
+
+    "definitions": {
+        "unit_value": {
+            "$ref": "../generic/unit-value-1.0.json"
+        }
+    },
+
+    "allOf": [
+        {
+            "$ref": "#/definitions/unit_value"
+        },
+        {
+            "properties": {
+                "unit": {
+                    "enum": ["??"]
+                }
+            }
+        }
+    ]
+}
+
+Affect-Arousal
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "description": "This schema represents the Arousal of affect a person experiences.",
+    "references": [
+        {
+            "description": "??",
+            "url": "??"
+        }
+    ],
+
+    "definitions": {
+        "unit_value": {
+            "$ref": "../generic/unit-value-1.0.json"
+        }
+    },
+
+    "allOf": [
+        {
+            "$ref": "#/definitions/unit_value"
+        },
+        {
+            "properties": {
+                "unit": {
+                    "enum": ["??"]
+                }
+            }
+        }
+    ]
+}
+
+Positive Affect
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "description": "This schema represents the amount of Positive Affect person experiences.",
+    "references": [
+        {
+            "description": "??",
+            "url": "??"
+        }
+    ],
+
+    "definitions": {
+        "unit_value": {
+            "$ref": "../generic/unit-value-1.0.json"
+        }
+    },
+
+    "allOf": [
+        {
+            "$ref": "#/definitions/unit_value"
+        },
+        {
+            "properties": {
+                "unit": {
+                    "enum": ["??"]
+                }
+            }
+        }
+    ]
+}
+
+Negative Affect
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "description": "This schema represents the amount of Negative Affect person experiences.",
+    "references": [
+        {
+            "description": "??",
+            "url": "??"
+        }
+    ],
+
+    "definitions": {
+        "unit_value": {
+            "$ref": "../generic/unit-value-1.0.json"
+        }
+    },
+
+    "allOf": [
+        {
+            "$ref": "#/definitions/unit_value"
+        },
+        {
+            "properties": {
+                "unit": {
+                    "enum": ["??"]
+                }
+            }
+        }
+    ]
+}
+
+Mood
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+
+    "type": "string",
+    "description": "The name of the Mood the person experiences",
+    "references": [
+        {
+            "value": "afraid",
+            "description": "??",
+            "url": "??"
+        },
+        {
+            "value": "tense",
+            "description": "??",
+            "url": "??"
+        },
+        {
+            "value": "excited",
+            "description": "??",
+            "url": "??"
+        },
+        {
+            "value": "delighted",
+            "description": "??",
+            "url": "??"
+        },
+        {
+            "value": "frustrated",
+            "description": "??",
+            "url": "??"
+        },
+        {
+            "value": "angry",
+            "description": "??",
+            "url": "??"
+        },
+        {
+            "value": "happy",
+            "description": "??",
+            "url": "??"
+        },
+        {
+            "value": "glad",
+            "description": "??",
+            "url": "??"
+        },
+        {
+            "value": "miserable",
+            "description": "??",
+            "url": "??"
+        },
+        {
+            "value": "sad",
+            "description": "??",
+            "url": "??"
+        },
+        {
+            "value": "calm",
+            "description": "??",
+            "url": "??"
+        },
+        {
+            "value": "satisfied",
+            "description": "??",
+            "url": "??"
+        },
+        {
+            "value": "gloomy",
+            "description": "??",
+            "url": "??"
+        },
+        {
+            "value": "tired",
+            "description": "??",
+            "url": "??"
+        },
+        {
+            "value": "sleepy",
+            "description": "??",
+            "url": "??"
+        },
+        {
+            "value": "serene",
+            "description": "??",
+            "url": "??"
+        }
+    ],
+    "enum": [
+        "afraid",
+        "tense",
+        "excited",
+        "delighted",
+        "frustrated",
+        "andgry",
+        "happy",
+        "glad",
+        "miserable",
+        "sad",
+        "calm",
+        "satisfied",
+        "gloomy",
+        "tired",
+        "sleepy",
+        "serene"
+    ]
+}
+
+
+PAM
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+
+    "description": "This schema represents a person's PAM scores, which represent the mood and affective experience of that person. PAM, the Photographic Affect Meter, is a validated brief measure of affect found to correlate strongly with PANAS and several other gold standard longer form measures.",
+    "type": "object",
+    "references": [
+        {
+            "description": "??",
+            "url": "??"
+        }
+    ],
+    "definitions": {
+        "affect-valence": {
+            "$ref": "affect-valence.0.json"
+        },
+        "affect-arousal": {
+            "$ref": "affect-arousal-1.0.json"
+        },
+        "positive_affect": {
+            "$ref": "positive_affect-1.0.json"
+        },
+        "negative_affect": {
+            "$ref": "negative_affect-1.0.json"
+        },
+        "mood": {
+            "$ref": "mood-1.0.json"
+        },
+        "time_frame": {
+            "$ref": "../generic/time-frame-1.0.json"
+        }
+    },
+
+    "properties": {
+        "affect-valence": {
+            "$ref": "#/definitions/affect-valence"
+        },
+        "affect-arousal": {
+            "$ref": "#/definitions/affect-arousal"
+        },
+        "positive_affect": {
+            "$ref": "#/definitions/positive_affect"
+        },
+        "negative_affect": {
+            "$ref": "#/definitions/negative_affect"
+        },
+        "mood": {
+            "$ref": "#/definitions/mood"
+        },
+        "effective_time_frame": {
+            "$ref": "#/definitions/time_frame"
+        }
+    },
+
+    "required": ["positive_affect"]
+}
+
+

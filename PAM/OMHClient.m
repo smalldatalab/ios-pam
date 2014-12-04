@@ -19,6 +19,9 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
 @property (nonatomic, strong) GPPSignIn *gppSignIn;
 @property (nonatomic, strong) AFHTTPSessionManager *httpSessionManager;
 
+@property (nonatomic, strong) NSString *dsuAccessToken;
+@property (nonatomic, strong) NSString *dsuRefreshToken;
+
 @end
 
 @implementation OMHClient
@@ -29,7 +32,13 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
     
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _sharedClient = [[self alloc] initPrivate];
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSData *encodedClient = [defaults objectForKey:@"OMHClient"];
+        if (encodedClient != nil) {
+            _sharedClient = (OMHClient *)[NSKeyedUnarchiver unarchiveObjectWithData:encodedClient];
+        } else {
+            _sharedClient = [[self alloc] initPrivate];
+        }
     });
     
     return _sharedClient;
@@ -43,16 +52,46 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
     return nil;
 }
 
+- (void)commonInit
+{
+//    [self.gppSignIn signOut]; // TODO: remove
+}
+
 - (instancetype)initPrivate
 {
     self = [super init];
     if (self) {
-        [self.gppSignIn signOut]; // TODO: remove
-        
-        self.httpSessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:kDSUBaseURL]];
-        
+        [self commonInit];
     }
     return self;
+}
+
+- (id)initWithCoder:(NSCoder *)decoder
+{
+    self = [super init];
+    if (self != nil) {
+        _dsuAccessToken = [decoder decodeObjectForKey:@"client.dsuAccessToken"];
+        _dsuRefreshToken = [decoder decodeObjectForKey:@"client.dsuRefreshToken"];
+    }
+    
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder
+{
+    [encoder encodeObject:self.dsuAccessToken forKey:@"client.dsuAccessToken"];
+    [encoder encodeObject:self.dsuRefreshToken forKey:@"client.dsuRefreshToken"];
+}
+
+
+
+- (void)saveClientState
+{
+    NSLog(@"saving client state");
+    NSData *encodedClient = [NSKeyedArchiver archivedDataWithRootObject:self];
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setObject:encodedClient forKey:@"OMHClient"];
+    [userDefaults synchronize];
 }
 
 - (NSString *)encodedClientIDAndSecret
@@ -70,7 +109,7 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
 }
 
 
-#pragma mark - Property Setters
+#pragma mark - Property Accessors
 
 - (void)setAppGoogleClientID:(NSString *)appGoogleClientID
 {
@@ -84,19 +123,42 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
     self.gppSignIn.homeServerClientID = serverGoogleClientID;
 }
 
+- (BOOL)isSignedIn
+{
+    return (self.dsuAccessToken != nil && self.dsuRefreshToken != nil);
+}
+
 
 #pragma mark - HTTP Session Manager
 
-- (void)setAuthorizationToken:(NSString *)token
+- (AFHTTPSessionManager *)httpSessionManager
 {
-    NSLog(@"set auth token: %@", token);
+    if (_httpSessionManager == nil) {
+        _httpSessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:kDSUBaseURL]];
+    }
+    return _httpSessionManager;
+}
+
+- (void)setDSUSignInHeader
+{
+    NSString *token = [self encodedClientIDAndSecret];
     if (token) {
         NSString *auth = [NSString stringWithFormat:@"Basic %@", token];
         [self.httpSessionManager.requestSerializer setValue:auth forHTTPHeaderField:@"Authorization"];
     }
-    else {
-        [self.httpSessionManager.requestSerializer setValue:nil forHTTPHeaderField:@"Authorization"];
+}
+
+- (void)setDSUUploadHeader
+{
+    if (self.dsuAccessToken) {
+        NSString *auth = [NSString stringWithFormat:@"Bearer %@", self.dsuAccessToken];
+        [self.httpSessionManager.requestSerializer setValue:auth forHTTPHeaderField:@"Authorization"];
     }
+}
+
+- (void)updateDataPoint:(NSDictionary *)dataPoint
+{
+    
 }
 
 
@@ -136,17 +198,17 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
         NSString *serverCode = [GPPSignIn sharedInstance].homeServerAuthorizationCode;
         NSLog(@"serverCode: %@", serverCode);
         if (serverCode != nil) {
-            [self loginToDSUWithServerCode:serverCode];
+            [self signInToDSUWithServerCode:serverCode];
         }
         else {
-            NSLog(@"failed to receive server code from google auth);
+            NSLog(@"failed to receive server code from google auth");
         }
     }
 }
 
-- (void)loginToDSUWithServerCode:(NSString *)serverCode
+- (void)signInToDSUWithServerCode:(NSString *)serverCode
 {
-    [self setAuthorizationToken:[self encodedClientIDAndSecret]];
+    [self setDSUSignInHeader];
     
     NSString *request =  @"google-signin";
     NSString *code = [NSString stringWithFormat:@"fromApp_%@", serverCode];
@@ -154,8 +216,20 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
     
     [self.httpSessionManager GET:request parameters:parameters success:^(NSURLSessionDataTask *task, id responseObject) {
         NSLog(@"DSU login success, response object: %@", responseObject);
+        NSDictionary *responseDictionary = (NSDictionary *)responseObject;
+        self.dsuAccessToken = responseDictionary[@"access_token"];
+        self.dsuRefreshToken = responseDictionary[@"refresh_token"];
+        [self saveClientState];
+        
+        if (self.signInDelegate != nil) {
+            [self.signInDelegate OMHClientSignInFinishedWithError:nil];
+        }
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         NSLog(@"DSU login failure, error: %@", error);
+        
+        if (self.signInDelegate != nil) {
+            [self.signInDelegate OMHClientSignInFinishedWithError:error];
+        }
     }];
 }
 
@@ -164,6 +238,13 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
     return [GPPURLHandler handleURL:url
                   sourceApplication:sourceApplication
                          annotation:annotation];
+}
+
+- (void)signOut
+{
+    [self.gppSignIn signOut];
+    self.dsuAccessToken = nil;
+    self.dsuRefreshToken = nil;
 }
 
 @end
