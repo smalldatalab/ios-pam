@@ -32,7 +32,7 @@ sourceApplication:(NSString *)sourceApplication
 
 - (void)signOut;
 
-- (void)updateDataPoint:(NSDictionary *)dataPoint;
+- (void)submitDataPoint:(NSDictionary *)dataPoint;
 
 @end
 

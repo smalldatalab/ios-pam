@@ -207,7 +207,7 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
 -(void)submit
 {
     NSDictionary *dataPoint = [self createDataPointForIndex:self.selectedCell.index];
-    [[OMHClient sharedClient] updateDataPoint:dataPoint];
+    [[OMHClient sharedClient] submitDataPoint:dataPoint];
     
     [self imageCellPressed:nil];
     [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kLastSubmitDateKey];

@@ -21,6 +21,10 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
 
 @property (nonatomic, strong) NSString *dsuAccessToken;
 @property (nonatomic, strong) NSString *dsuRefreshToken;
+@property (nonatomic, strong) NSDate *accessTokenDate;
+@property (nonatomic, assign) NSTimeInterval accessTokenValidDuration;
+
+@property (nonatomic, strong) NSMutableArray *pendingDataPoints;
 
 @end
 
@@ -62,6 +66,8 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
     self = [super init];
     if (self) {
         [self commonInit];
+        
+        self.pendingDataPoints = [NSMutableArray array];
     }
     return self;
 }
@@ -72,6 +78,11 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
     if (self != nil) {
         _dsuAccessToken = [decoder decodeObjectForKey:@"client.dsuAccessToken"];
         _dsuRefreshToken = [decoder decodeObjectForKey:@"client.dsuRefreshToken"];
+        _pendingDataPoints = [decoder decodeObjectForKey:@"client.pendingDataPoints"];
+        if (_pendingDataPoints == nil) _pendingDataPoints = [NSMutableArray array]; // TODO: remove
+        [_pendingDataPoints removeAllObjects];
+        _accessTokenDate = [decoder decodeObjectForKey:@"client.accessTokenDate"];
+        _accessTokenValidDuration = [decoder decodeDoubleForKey:@"client.accessTokenValidDuration"];
     }
     
     return self;
@@ -81,6 +92,9 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
 {
     [encoder encodeObject:self.dsuAccessToken forKey:@"client.dsuAccessToken"];
     [encoder encodeObject:self.dsuRefreshToken forKey:@"client.dsuRefreshToken"];
+    [encoder encodeObject:self.pendingDataPoints forKey:@"client.pendingDataPoints"];
+    [encoder encodeObject:self.accessTokenDate forKey:@"client.accessTokenDate"];
+    [encoder encodeDouble:self.accessTokenValidDuration forKey:@"client.accessTokenValidDuration"];
 }
 
 
@@ -143,6 +157,7 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
 {
     NSString *token = [self encodedClientIDAndSecret];
     if (token) {
+        self.httpSessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
         NSString *auth = [NSString stringWithFormat:@"Basic %@", token];
         [self.httpSessionManager.requestSerializer setValue:auth forHTTPHeaderField:@"Authorization"];
     }
@@ -150,15 +165,82 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
 
 - (void)setDSUUploadHeader
 {
+    NSLog(@"setting dsu upload header: %@", self.dsuAccessToken);
     if (self.dsuAccessToken) {
+        self.httpSessionManager.requestSerializer = [AFJSONRequestSerializer serializer];
         NSString *auth = [NSString stringWithFormat:@"Bearer %@", self.dsuAccessToken];
         [self.httpSessionManager.requestSerializer setValue:auth forHTTPHeaderField:@"Authorization"];
     }
 }
 
-- (void)updateDataPoint:(NSDictionary *)dataPoint
+- (void)storeAuthenticationResponse:(NSDictionary *)responseDictionary
 {
+    self.dsuAccessToken = responseDictionary[@"access_token"];
+    self.dsuRefreshToken = responseDictionary[@"refresh_token"];
+    self.accessTokenDate = [NSDate date];
+    self.accessTokenValidDuration = [responseDictionary[@"expires_in"] doubleValue];
+    [self saveClientState];
+}
+
+- (void)refreshAuthentication
+{
+    [self setDSUSignInHeader];
     
+    NSString *request = @"oauth/token";
+    NSDictionary *parameters = @{@"refresh_token" : self.dsuRefreshToken,
+                                 @"grant_type" : @"refresh_token"};
+    
+    [self.httpSessionManager POST:request parameters:parameters success:^(NSURLSessionDataTask *task, id responseObject) {
+        NSLog(@"refresh authentication success: %@", responseObject);
+        
+        [self storeAuthenticationResponse:(NSDictionary *)responseObject];
+        [self uploadPendingDataPoints];
+        
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSLog(@"refresh authentiation failed: %@", error);
+    }];
+}
+
+- (void)submitDataPoint:(NSDictionary *)dataPoint
+{
+    [self.pendingDataPoints addObject:dataPoint];
+    // TODO: check expiry date and don't refresh unless necessary
+    [self refreshAuthentication];
+}
+
+- (void)uploadPendingDataPoints
+{
+    NSLog(@"uploading pending data points: %d", (int)self.pendingDataPoints.count);
+    [self setDSUUploadHeader];
+    for (NSDictionary *dataPoint in self.pendingDataPoints) {
+        [self uploadDataPoint:dataPoint];
+    }
+}
+
+- (void)uploadDataPoint:(NSDictionary *)dataPoint
+{
+    NSLog(@"uploading data point: %@", dataPoint);
+    
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dataPoint
+                                                       options:0
+                                                         error:nil];
+    NSDictionary *dataHeaders = @{@"Content-Disposition" :@"form-data; name=\"data\"",
+                                  @"Content-Type" : @"application/json"};
+    
+    NSString *request = @"dataPoints";
+    
+//    [self.httpSessionManager POST:request parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+//        [formData appendPartWithHeaders:dataHeaders body:jsonData];
+//    
+//    }
+     [self.httpSessionManager POST:request parameters:dataPoint
+                          success:^(NSURLSessionDataTask *task, id responseObject) {
+        NSLog(@"upload data point succeeded: %@", responseObject);
+        NSLog(@"array contains data point: %d", [self.pendingDataPoints containsObject:dataPoint]);
+        [self.pendingDataPoints removeObject:dataPoint];
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSLog(@"upload data point failed: %@", error);
+    }];
 }
 
 
@@ -216,10 +298,7 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
     
     [self.httpSessionManager GET:request parameters:parameters success:^(NSURLSessionDataTask *task, id responseObject) {
         NSLog(@"DSU login success, response object: %@", responseObject);
-        NSDictionary *responseDictionary = (NSDictionary *)responseObject;
-        self.dsuAccessToken = responseDictionary[@"access_token"];
-        self.dsuRefreshToken = responseDictionary[@"refresh_token"];
-        [self saveClientState];
+        [self storeAuthenticationResponse:(NSDictionary *)responseObject];
         
         if (self.signInDelegate != nil) {
             [self.signInDelegate OMHClientSignInFinishedWithError:nil];
@@ -243,8 +322,11 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
 - (void)signOut
 {
     [self.gppSignIn signOut];
+    
     self.dsuAccessToken = nil;
     self.dsuRefreshToken = nil;
+    self.accessTokenDate = nil;
+    self.accessTokenValidDuration = 0;
 }
 
 @end
