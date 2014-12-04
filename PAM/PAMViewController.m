@@ -187,7 +187,7 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
     self.selectedCell = cell;
     self.submitButton.enabled = YES;
     
-    NSLog(@"index: %d, PAM: %@", cell.index, [self dataPointForIndex:cell.index]);
+    NSLog(@"index: %d, PAM: %@", cell.index, [self dataPointBodyForIndex:cell.index]);
 }
 
 // Load new image in each unselected cell
@@ -206,6 +206,9 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
 
 -(void)submit
 {
+    NSDictionary *dataPoint = [self createDataPointForIndex:self.selectedCell.index];
+    [[OMHClient sharedClient] updateDataPoint:dataPoint];
+    
     [self imageCellPressed:nil];
     [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kLastSubmitDateKey];
     self.submitButton.enabled = NO;
@@ -215,25 +218,55 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
 }
 
 
-#pragma mark - PAM Measures
+#pragma mark - PAM Data Point
 
-- (NSDictionary *)dataPointForIndex:(int)index
+- (NSDictionary *)createDataPointForIndex:(int)index
+{
+    return @{@"header" : [self dataPointHeader],
+             @"body" : [self dataPointBodyForIndex:index]};
+}
+
+- (NSDictionary *)dataPointHeader
+{
+    NSString *uuid = [[[NSUUID alloc] init] UUIDString];
+    NSString *creationDateTime = [[self ISO8601Formatter] stringFromDate:[NSDate date]];
+    
+    NSDictionary *schemaID = @{@"namespace" : @"omh",
+                               @"name" : @"data-point",
+                               @"version": @"1.0"};
+    
+    NSDictionary *provenance = @{@"source_name": @"PAM",
+                                 @"modality": @"self-reported"};
+    
+    return @{@"id" : uuid,
+             @"creation_date_time" : creationDateTime,
+             @"schema_id" : schemaID,
+             @"acquisition_provenance" : provenance};
+}
+
+- (NSDictionary *)dataPointBodyForIndex:(int)index
 {
     int av = [self affectValenceForIndex:index];
     int aa = [self affectArousalForIndex:index];
     int pa = [self positiveAffectForValence:av arousal:aa];
     int na = [self negativeAffectForValence:av arousal:aa];
     NSString *mood = [self moodForIndex:index];
-    NSString *timeframe = [self currentTimeFrame];
+    NSDictionary *timeframe = [self currentTimeFrame];
     NSString *photoID = [self imageIDForIndex:index];
     
-    return @{@"affect-valence" : @(av),
-             @"affect-arousal" : @(aa),
-             @"positive_affect" : @(pa),
-             @"negative_affect" : @(na),
+    return @{@"affect-valence" : [self unitValueWithInt:av],
+             @"affect-arousal" : [self unitValueWithInt:aa],
+             @"positive_affect" : [self unitValueWithInt:pa],
+             @"negative_affect" : [self unitValueWithInt:na],
              @"mood" : mood,
              @"photo_id" : photoID,
              @"effective_time_frame" : timeframe};
+}
+
+- (NSDictionary *)unitValueWithInt:(int)anInt
+{
+    return @{@"unit" : @"unit",
+             @"value" : @(anInt)};
 }
 
 - (int)affectValenceForIndex:(int)index
@@ -280,9 +313,10 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
     return sMoodArray[index];
 }
 
-- (NSString *)currentTimeFrame
+- (NSDictionary *)currentTimeFrame
 {
-    return [[self ISO8601Formatter] stringFromDate:[NSDate date]];
+    NSString *dateTime = [[self ISO8601Formatter] stringFromDate:[NSDate date]];
+    return @{@"date_time" : dateTime};
 }
 
 - (NSDateFormatter *)ISO8601Formatter
