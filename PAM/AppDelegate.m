@@ -10,7 +10,7 @@
 #import "PAMViewController.h"
 #import "LoginViewController.h"
 
-#import "OMHClient.h"
+#import <OMHClient/OMHClient.h>
 
 
 NSString * const kPAMGoogleClientID = @"48636836762-ktb5qaq5seoqn4b73nfua0csual4b8ng.apps.googleusercontent.com";

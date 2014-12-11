@@ -1,14 +1,20 @@
 //
-//  OMHClient.h
-//  PAM
+//  OMHClientLibrary.h
+//  OMHClient
 //
-//  Created by Charles Forkish on 12/2/14.
-//  Copyright (c) 2014 Charlie Forkish. All rights reserved.
+//  Created by Charles Forkish on 12/11/14.
+//  Copyright (c) 2014 Open mHealth. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 @protocol OMHSignInDelegate;
+
+@interface OMHTest : NSObject
+
++ (void)test;
+
+@end
 
 @interface OMHClient : NSObject
 

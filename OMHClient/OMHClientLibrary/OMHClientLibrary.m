@@ -1,18 +1,29 @@
 //
-//  OMHClient.m
-//  PAM
+//  OMHClientLibrary.m
+//  OMHClient
 //
-//  Created by Charles Forkish on 12/2/14.
-//  Copyright (c) 2014 Charlie Forkish. All rights reserved.
+//  Created by Charles Forkish on 12/11/14.
+//  Copyright (c) 2014 Open mHealth. All rights reserved.
 //
 
-#import "OMHClient.h"
+#import "OMHClientLibrary.h"
 #import "AFHTTPSessionManager.h"
 
 #import <GooglePlus/GooglePlus.h>
 #import <GoogleOpenSource/GoogleOpenSource.h>
 
 NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
+
+
+
+@implementation OMHTest
+
++ (void)test
+{
+    NSLog(@"TEST!!");
+}
+
+@end
 
 @interface OMHClient () <GPPSignInDelegate>
 
@@ -58,7 +69,7 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
 
 - (void)commonInit
 {
-//    [self.gppSignIn signOut]; // TODO: remove
+    //    [self.gppSignIn signOut]; // TODO: remove
 }
 
 - (instancetype)initPrivate
@@ -229,18 +240,18 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
     
     NSString *request = @"dataPoints";
     
-//    [self.httpSessionManager POST:request parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
-//        [formData appendPartWithHeaders:dataHeaders body:jsonData];
-//    
-//    }
-     [self.httpSessionManager POST:request parameters:dataPoint
+    //    [self.httpSessionManager POST:request parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+    //        [formData appendPartWithHeaders:dataHeaders body:jsonData];
+    //
+    //    }
+    [self.httpSessionManager POST:request parameters:dataPoint
                           success:^(NSURLSessionDataTask *task, id responseObject) {
-        NSLog(@"upload data point succeeded: %@", responseObject);
-        NSLog(@"array contains data point: %d", [self.pendingDataPoints containsObject:dataPoint]);
-        [self.pendingDataPoints removeObject:dataPoint];
-    } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"upload data point failed: %@", error);
-    }];
+                              NSLog(@"upload data point succeeded: %@", responseObject);
+                              NSLog(@"array contains data point: %d", [self.pendingDataPoints containsObject:dataPoint]);
+                              [self.pendingDataPoints removeObject:dataPoint];
+                          } failure:^(NSURLSessionDataTask *task, NSError *error) {
+                              NSLog(@"upload data point failed: %@", error);
+                          }];
 }
 
 
@@ -260,7 +271,7 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
         GPPSignIn *signIn = [GPPSignIn sharedInstance];
         signIn.shouldFetchGooglePlusUser = YES;
         signIn.shouldFetchGoogleUserEmail = YES;
-//        signIn.attemptSSO = YES;
+        //        signIn.attemptSSO = YES;
         
         signIn.scopes = @[ @"profile" ];
         _gppSignIn = signIn;
@@ -330,3 +341,4 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
 }
 
 @end
+
