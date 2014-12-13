@@ -83,6 +83,7 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
     
     [self createPAMGrid];
     [self updateLastSubmitLabel];
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -221,28 +222,36 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
 
 #pragma mark - PAM Data Point
 
-- (NSDictionary *)createDataPointForIndex:(int)index
++ (OMHSchemaID *)schemaID
 {
-    return @{@"header" : [self dataPointHeader],
-             @"body" : [self dataPointBodyForIndex:index]};
+    static OMHSchemaID *sSchemaID = nil;
+    if (!sSchemaID) {
+        sSchemaID = [[OMHSchemaID alloc] init];
+        sSchemaID.schemaNamespace = @"cornell";
+        sSchemaID.name = @"photographic-affect-meter-scores";
+        sSchemaID.version = @"1.0";
+    }
+    return sSchemaID;
 }
 
-- (NSDictionary *)dataPointHeader
++ (OMHAcquisitionProvenance *)acquisitionProvenance
 {
-    NSString *uuid = [[[NSUUID alloc] init] UUIDString];
-    NSString *creationDateTime = [[self ISO8601Formatter] stringFromDate:[NSDate date]];
-    
-    NSDictionary *schemaID = @{@"namespace" : @"omh",
-                               @"name" : @"data-point",
-                               @"version": @"1.0"};
-    
-    NSDictionary *provenance = @{@"source_name": @"PAM",
-                                 @"modality": @"self-reported"};
-    
-    return @{@"id" : uuid,
-             @"creation_date_time" : creationDateTime,
-             @"schema_id" : schemaID,
-             @"acquisition_provenance" : provenance};
+    static OMHAcquisitionProvenance *sProvenance = nil;
+    if (!sProvenance) {
+        sProvenance = [[OMHAcquisitionProvenance alloc] init];
+        sProvenance.sourceName = @"PAM-iOS-1.0";
+        sProvenance.modality = OMHAcquisitionProvenanceModalitySelfReported;
+    }
+    return sProvenance;
+}
+
+- (NSDictionary *)createDataPointForIndex:(int)index
+{
+    OMHDataPoint *dataPoint = [OMHDataPoint templateDataPoint];
+    dataPoint.header.schemaID = [PAMViewController schemaID];
+    dataPoint.header.acquisitionProvenance = [PAMViewController acquisitionProvenance];
+    dataPoint.body = [self dataPointBodyForIndex:index];
+    return dataPoint;
 }
 
 - (NSDictionary *)dataPointBodyForIndex:(int)index
@@ -253,21 +262,13 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
     int na = [self negativeAffectForValence:av arousal:aa];
     NSString *mood = [self moodForIndex:index];
     NSDictionary *timeframe = [self currentTimeFrame];
-    NSString *photoID = [self imageIDForIndex:index];
     
-    return @{@"affect-valence" : [self unitValueWithInt:av],
-             @"affect-arousal" : [self unitValueWithInt:aa],
-             @"positive_affect" : [self unitValueWithInt:pa],
-             @"negative_affect" : [self unitValueWithInt:na],
+    return @{@"affect_valence" : @(av),
+             @"affect_arousal" : @(aa),
+             @"positive_affect" : @(pa),
+             @"negative_affect" : @(na),
              @"mood" : mood,
-             @"photo_id" : photoID,
              @"effective_time_frame" : timeframe};
-}
-
-- (NSDictionary *)unitValueWithInt:(int)anInt
-{
-    return @{@"unit" : @"unit",
-             @"value" : @(anInt)};
 }
 
 - (int)affectValenceForIndex:(int)index
@@ -316,26 +317,7 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
 
 - (NSDictionary *)currentTimeFrame
 {
-    NSString *dateTime = [[self ISO8601Formatter] stringFromDate:[NSDate date]];
-    return @{@"date_time" : dateTime};
-}
-
-- (NSDateFormatter *)ISO8601Formatter
-{
-    static NSDateFormatter *dateFormatter = nil;
-    if (dateFormatter == nil) {
-        dateFormatter = [[NSDateFormatter alloc] init];
-        NSLocale *enUSPOSIXLocale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
-        [dateFormatter setLocale:enUSPOSIXLocale];
-        [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
-    }
-    return dateFormatter;
-}
-
-- (NSString *)imageIDForIndex:(int)index
-{
-    PAMImageCell *cell = self.imageCells[index];
-    return cell.currentImageID;
+    return @{@"date_time" : [OMHDataPoint stringFromDate:[NSDate date]]};
 }
 
 

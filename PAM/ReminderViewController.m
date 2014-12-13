@@ -98,7 +98,7 @@
 - (void)debugPrintAllNotifications
 {
     NSArray *notes = [UIApplication sharedApplication].scheduledLocalNotifications;
-    NSLog( @"enabled: %d, notifications: %d", self.enabledSwitch.on, notes.count);
+    NSLog( @"enabled: %d, notifications: %d", self.enabledSwitch.on, (int)notes.count);
     for (UILocalNotification *note in notes) {
         NSLog(@"notification: %@", note);
     }

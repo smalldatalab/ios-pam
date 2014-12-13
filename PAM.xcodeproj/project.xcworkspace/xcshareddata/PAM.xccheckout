@@ -12,6 +12,8 @@
 	<dict>
 		<key>091E09210FD78AFBF90DE870FC06BC93C5CC870D</key>
 		<string>https://github.com/cforkish/PAM_ios.git</string>
+		<key>6918CDE7BC87254145CB7880A0E0CA7B4D7DD71C</key>
+		<string>https://github.com/cforkish/OMHClient.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>PAM.xcodeproj</string>
@@ -19,6 +21,8 @@
 	<dict>
 		<key>091E09210FD78AFBF90DE870FC06BC93C5CC870D</key>
 		<string>../..</string>
+		<key>6918CDE7BC87254145CB7880A0E0CA7B4D7DD71C</key>
+		<string>../../OMHClient/</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/cforkish/PAM_ios.git</string>
@@ -28,6 +32,14 @@
 	<string>091E09210FD78AFBF90DE870FC06BC93C5CC870D</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>6918CDE7BC87254145CB7880A0E0CA7B4D7DD71C</string>
+			<key>IDESourceControlWCCName</key>
+			<string>OMHClient</string>
+		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
