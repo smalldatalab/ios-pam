@@ -9,8 +9,7 @@
 #import "LoginViewController.h"
 #import "UIView+AutoLayoutHelpers.h"
 #import "AppDelegate.h"
-
-#import <OMHClient/OMHClient.h>
+#import "OMHClient.h"
 
 @interface LoginViewController () <OMHSignInDelegate>
 

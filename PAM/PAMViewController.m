@@ -11,8 +11,7 @@
 #import "UIView+AutoLayoutHelpers.h"
 #import "LoginViewController.h"
 #import "ReminderViewController.h"
-
-#import <OMHClient/OMHClient.h>
+#import "OMHClient.h"
 
 #define NUM_ROWS 4
 #define NUM_COLS 4

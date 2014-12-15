@@ -44,11 +44,14 @@
     [self debugPrintAllNotifications];
 }
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     
-    [self requestNotificationPermissions];
+    if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerNotificationSettings:)]) {
+        [self requestNotificationPermissions];
+    }
 }
 
 - (void)requestNotificationPermissions
@@ -69,6 +72,7 @@
         [alert show];
     }
 }
+#endif
 
 - (BOOL)hasReminder
 {
