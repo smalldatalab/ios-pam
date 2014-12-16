@@ -9,7 +9,9 @@
 #import "ReminderViewController.h"
 #import "UIView+AutoLayoutHelpers.h"
 
-@interface ReminderViewController ()
+static NSString * const kHasRequestedPermissionKey = @"HAS_REQUESTED_PERMISSION";
+
+@interface ReminderViewController () <UIAlertViewDelegate>
 
 @property (nonatomic, strong) UISwitch *enabledSwitch;
 @property (nonatomic, strong) UIDatePicker *timePicker;
@@ -56,22 +58,41 @@
 
 - (void)requestNotificationPermissions
 {
+    UIUserNotificationSettings *settings = [UIApplication sharedApplication].currentUserNotificationSettings;
+    NSLog(@"settings: %@", settings);
+    if ((settings.types & UIUserNotificationTypeAlert)) return;
+    
+    NSString *title;
+    NSString *message;
+    BOOL hasRequested = [[NSUserDefaults standardUserDefaults] boolForKey:kHasRequestedPermissionKey];
+    
+    if (!hasRequested) {
+        title = @"Reminder Permissions";
+        message = @"To deliver reminders, PAM needs permission to display notifications. Please allow notifications for PAM.";
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kHasRequestedPermissionKey];
+    }
+    else {
+        title = @"Insufficient Permissions";
+        message = @"To deliver reminders, PAM needs permission to display notifications. Please enable notifications for PAM in your device settings.";
+
+    }
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
+                                                    message:message
+                                                   delegate:nil
+                                          cancelButtonTitle:@"OK"
+                                          otherButtonTitles:nil];
+    alert.delegate = self;
+    [alert show];
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    NSLog(@"alert view did dismiss");
     UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeSound categories:nil];
     [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
-    
-    settings = [UIApplication sharedApplication].currentUserNotificationSettings;
-    NSLog(@"settings: %@", settings);
-    if (!(settings.types & UIUserNotificationTypeAlert)) {
-        NSString *title = @"Insufficient Permissions";
-        NSString *message = @"To deliver reminders, PAM needs permission to display notifications. Please enable notifications for PAM in your device settings.";
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
-                                                        message:message
-                                                       delegate:nil
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-        [alert show];
-    }
 }
+
 #endif
 
 - (BOOL)hasReminder

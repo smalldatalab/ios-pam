@@ -12,7 +12,7 @@
 
 @interface PAMImageCell ()
 
-@property (nonatomic, strong) NSArray *images;
+@property (nonatomic, strong) NSArray *imageNames;
 @property (nonatomic, assign) int currentImageIdx;
 
 @end
@@ -24,22 +24,21 @@
     self = [super init];
     if (self) {
         _index = index;
-        [self setupImages];
+        [self setupImageNames];
         [self shuffleImage];
     }
     return self;
 }
 
-- (void)setupImages
+- (void)setupImageNames
 {
-    NSMutableArray *imgs = [NSMutableArray arrayWithCapacity:IMAGE_COUNT];
+    NSMutableArray *names = [NSMutableArray arrayWithCapacity:IMAGE_COUNT];
     for (int i = 0; i < IMAGE_COUNT; i++) {
         NSString *imageName = [NSString stringWithFormat:@"%d_%d", self.index+1, i+1];
-        UIImage *image = [UIImage imageNamed:imageName];
-        [imgs addObject:image];
+        [names addObject:imageName];
     }
-    self.images = imgs;
-    self.currentImageIdx = IMAGE_COUNT + 1;
+    self.imageNames = names;
+    self.currentImageIdx = IMAGE_COUNT + 1; // ensure random first image
     
     UIImage *check = [UIImage imageNamed:@"check_small"];
     [self setImage:check forState:UIControlStateSelected];
@@ -54,7 +53,8 @@
     }
     self.currentImageIdx = newIdx;
     
-    UIImage *image = self.images[newIdx];
+    NSString *name = self.imageNames[newIdx];
+    UIImage *image = [UIImage imageNamed:name];
     [self setBackgroundImage:image forState:UIControlStateNormal];
 }
 
