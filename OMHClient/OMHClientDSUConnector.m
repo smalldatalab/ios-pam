@@ -272,19 +272,19 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
 
 - (void)uploadDataPoint:(NSDictionary *)dataPoint
 {
-    NSLog(@"uploading data point: %@", ((OMHDataPoint *)dataPoint).header.headerID);
+    NSLog(@"uploading data point: %@", dataPoint[@"header"][@"id"]);
     
     NSString *request = @"dataPoints";
     
     __block NSDictionary *blockDataPoint = dataPoint;
     [self.httpSessionManager POST:request parameters:dataPoint
                           success:^(NSURLSessionDataTask *task, id responseObject) {
-                              NSLog(@"upload data point succeeded: %@", ((OMHDataPoint *)blockDataPoint).header.headerID);
+                              NSLog(@"upload data point succeeded: %@", blockDataPoint[@"header"][@"id"]);
                               NSLog(@"array contains data point: %d", [self.pendingDataPoints containsObject:blockDataPoint]);
                               [self.pendingDataPoints removeObject:blockDataPoint];
                               [self saveClientState];
                           } failure:^(NSURLSessionDataTask *task, NSError *error) {
-                              NSLog(@"upload data point failed: %@", ((OMHDataPoint *)blockDataPoint).header.headerID);
+                              NSLog(@"upload data point failed: %@", blockDataPoint[@"header"][@"id"]);
                               NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
                               NSLog(@"response code: %d", (int)response.statusCode);
                               if (response.statusCode == 409) {
