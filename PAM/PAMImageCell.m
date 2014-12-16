@@ -34,7 +34,7 @@
 {
     NSMutableArray *names = [NSMutableArray arrayWithCapacity:IMAGE_COUNT];
     for (int i = 0; i < IMAGE_COUNT; i++) {
-        NSString *imageName = [NSString stringWithFormat:@"%d_%d", self.index+1, i+1];
+        NSString *imageName = [NSString stringWithFormat:@"%d_%d.jpg", self.index+1, i+1];
         [names addObject:imageName];
     }
     self.imageNames = names;

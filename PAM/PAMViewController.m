@@ -188,7 +188,7 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
     self.selectedCell = cell;
     self.submitButton.enabled = YES;
     
-    NSLog(@"index: %d, PAM: %@", cell.index, [self dataPointBodyForIndex:cell.index]);
+//    NSLog(@"index: %d, PAM: %@", cell.index, [self dataPointBodyForIndex:cell.index]);
 }
 
 // Load new image in each unselected cell
