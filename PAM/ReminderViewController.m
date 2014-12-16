@@ -49,7 +49,7 @@
 {
     [super viewDidAppear:animated];
     
-    if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerNotificationSettings:)]) {
+    if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
         [self requestNotificationPermissions];
     }
 }
