@@ -29,7 +29,6 @@
 - (BOOL)handleURL:(NSURL *)url
 sourceApplication:(NSString *)sourceApplication
        annotation:(id)annotation;
-- (void)refreshAuthentication;
 
 - (void)signOut;
 
@@ -39,8 +38,5 @@ sourceApplication:(NSString *)sourceApplication
 
 
 @protocol OMHSignInDelegate
-@optional
-
 - (void)OMHClientSignInFinishedWithError:(NSError *)error;
-
 @end

@@ -59,7 +59,7 @@
     self.signInButton.userInteractionEnabled = NO;
     self.signInButton.alpha = 0.7;
     
-    UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     [self.view addSubview:indicator];
     [indicator centerInView:self.view];
     [indicator startAnimating];

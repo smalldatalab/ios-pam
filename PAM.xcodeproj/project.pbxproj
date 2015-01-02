@@ -339,6 +339,9 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Charlie Forkish";
 				TargetAttributes = {
+					1E0BB4F219F709E300877208 = {
+						DevelopmentTeam = N6LPGP6RYT;
+					};
 					1E0BB50D19F709E300877208 = {
 						TestTargetID = 1E0BB4F219F709E300877208;
 					};
@@ -523,6 +526,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/OMHClient/OMHClient\\ Framework",
@@ -547,6 +551,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/OMHClient/OMHClient\\ Framework",
