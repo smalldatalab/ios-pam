@@ -18,6 +18,7 @@
 		1E0BB51A19F709E300877208 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1E0BB51819F709E300877208 /* InfoPlist.strings */; };
 		1E0BB51C19F709E300877208 /* PAMTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E0BB51B19F709E300877208 /* PAMTests.m */; };
 		1E0BB52A19F70D6F00877208 /* PAMViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E0BB52919F70D6F00877208 /* PAMViewController.m */; };
+		1E3D872C1A6532110049F0CD /* AppConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E3D872B1A6532110049F0CD /* AppConstants.m */; };
 		1E6F83BC1A24A0E700BACC0F /* ReminderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E6F83BB1A24A0E700BACC0F /* ReminderViewController.m */; };
 		1E8441FF1A3F052300E91382 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E8441F71A3F052300E91382 /* SystemConfiguration.framework */; };
 		1E8442001A3F052300E91382 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E8441F81A3F052300E91382 /* Security.framework */; };
@@ -74,6 +75,8 @@
 		1E0BB51B19F709E300877208 /* PAMTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PAMTests.m; sourceTree = "<group>"; };
 		1E0BB52819F70D6F00877208 /* PAMViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PAMViewController.h; sourceTree = "<group>"; };
 		1E0BB52919F70D6F00877208 /* PAMViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PAMViewController.m; sourceTree = "<group>"; };
+		1E3D872A1A6532110049F0CD /* AppConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppConstants.h; sourceTree = "<group>"; };
+		1E3D872B1A6532110049F0CD /* AppConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppConstants.m; sourceTree = "<group>"; };
 		1E6F83BA1A24A0E700BACC0F /* ReminderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReminderViewController.h; sourceTree = "<group>"; };
 		1E6F83BB1A24A0E700BACC0F /* ReminderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReminderViewController.m; sourceTree = "<group>"; };
 		1E8441F71A3F052300E91382 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -193,6 +196,8 @@
 		1E0BB4FC19F709E300877208 /* PAM */ = {
 			isa = PBXGroup;
 			children = (
+				1E3D872A1A6532110049F0CD /* AppConstants.h */,
+				1E3D872B1A6532110049F0CD /* AppConstants.m */,
 				1E0BB50519F709E300877208 /* AppDelegate.h */,
 				1E0BB50619F709E300877208 /* AppDelegate.m */,
 				1EB2C40D1A22318000DC1A06 /* LoginViewController.h */,
@@ -410,6 +415,7 @@
 				1E84422F1A3F056300E91382 /* AFNetworkReachabilityManager.m in Sources */,
 				1E8442331A3F056300E91382 /* AFURLResponseSerialization.m in Sources */,
 				1E84422C1A3F056300E91382 /* AFHTTPRequestOperationManager.m in Sources */,
+				1E3D872C1A6532110049F0CD /* AppConstants.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -527,6 +533,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/OMHClient/OMHClient\\ Framework",
@@ -536,11 +543,17 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PAM/PAM-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+					"OMHDEBUG=1",
+				);
 				INFOPLIST_FILE = "PAM/PAM-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -551,7 +564,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/OMHClient/OMHClient\\ Framework",
@@ -566,6 +580,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};

@@ -76,7 +76,7 @@
     self.signInFailureLabel = label;
 }
 
-- (void)OMHClientSignInFinishedWithError:(NSError *)error
+- (void)OMHClient:(OMHClient *)client signInFinishedWithError:(NSError *)error
 {
     [self.activityIndicator stopAnimating];
     

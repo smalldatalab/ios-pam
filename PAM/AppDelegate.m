@@ -10,12 +10,7 @@
 #import "PAMViewController.h"
 #import "LoginViewController.h"
 #import "OMHClient.h"
-
-
-NSString * const kPAMGoogleClientID = @"48636836762-ktb5qaq5seoqn4b73nfua0csual4b8ng.apps.googleusercontent.com";
-NSString * const kOMHServerGoogleClientID = @"48636836762-mulldgpmet2r4s3f16s931ea9crcc64m.apps.googleusercontent.com";
-NSString * const kPAMDSUClientID = @"com.openmhealth.ios.PAM";
-NSString * const kPAMDSUClientSecret = @"Rtg43jkLD7z76c";
+#import "AppConstants.h"
 
 @interface AppDelegate ()
 
@@ -28,8 +23,11 @@ NSString * const kPAMDSUClientSecret = @"Rtg43jkLD7z76c";
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    
-    [self setupOMHClient];
+     
+    [OMHClient setupClientWithAppGoogleClientID:kPAMGoogleClientID
+                           serverGoogleClientID:kOMHServerGoogleClientID
+                                 appDSUClientID:kPAMDSUClientID
+                             appDSUClientSecret:kPAMDSUClientSecret];
     
     UIViewController *root = nil;
     if (![OMHClient sharedClient].isSignedIn) {
@@ -48,15 +46,6 @@ NSString * const kPAMDSUClientSecret = @"Rtg43jkLD7z76c";
     [self.window makeKeyAndVisible];
     
     return YES;
-}
-
-- (void)setupOMHClient
-{
-    OMHClient *client = [OMHClient sharedClient];
-    client.appGoogleClientID = kPAMGoogleClientID;
-    client.serverGoogleClientID = kOMHServerGoogleClientID;
-    client.appDSUClientID = kPAMDSUClientID;
-    client.appDSUClientSecret = kPAMDSUClientSecret;
 }
 
 - (void)userDidLogin

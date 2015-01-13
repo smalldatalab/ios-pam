@@ -9,16 +9,31 @@
 #import "OMHClientDSUConnector.h"
 #import "AFHTTPSessionManager.h"
 #import "AFNetworkActivityIndicatorManager.h"
+#import "OMHDataPoint.h"
 
 #import <GooglePlus/GooglePlus.h>
 #import <GoogleOpenSource/GoogleOpenSource.h>
 
+#ifdef OMHDEBUG
+#   define OMHLog(fmt, ...) NSLog((@"%s " fmt), __PRETTY_FUNCTION__, ##__VA_ARGS__)
+#else
+#   define OMHLog(...)
+#endif
+
 NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
+
+NSString * const kAppGoogleClientIDKey = @"AppGoogleClientID";
+NSString * const kServerGoogleClientIDKey = @"ServerGoogleClientID";
+NSString * const kAppDSUClientIDKey = @"AppDSUClientID";
+NSString * const kAppDSUClientSecretKey = @"AppDSUClientSecret";
+NSString * const kSignedInUserEmailKey = @"SignedInUserEmail";
+NSString * const kHomeServerCodeKey = @"HomeServerCode";
+
+static OMHClient *_sharedClient = nil;
 
 
 @interface OMHClient () <GPPSignInDelegate>
 
-@property (nonatomic, strong) GPPSignIn *gppSignIn;
 @property (nonatomic, strong) AFHTTPSessionManager *httpSessionManager;
 
 @property (nonatomic, strong) NSString *dsuAccessToken;
@@ -28,26 +43,64 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
 
 @property (nonatomic, strong) NSMutableArray *pendingDataPoints;
 
+@property (nonatomic, assign) BOOL isAuthenticated;
+@property (atomic, assign) BOOL isAuthenticating;
+@property (nonatomic, strong) NSMutableArray *authRefreshCompletionBlocks;
+
 @end
 
 @implementation OMHClient
 
++ (void)setupClientWithAppGoogleClientID:(NSString *)appGooggleClientID
+                    serverGoogleClientID:(NSString *)serverGoogleClientID
+                          appDSUClientID:(NSString *)appDSUClientID
+                      appDSUClientSecret:(NSString *)appDSUClientSecret
+{
+    [self setAppGoogleClientID:appGooggleClientID];
+    [self setServerGoogleClientID:serverGoogleClientID];
+    [self setAppDSUClientID:appDSUClientID];
+    [self setAppDSUClientSecret:appDSUClientSecret];
+}
+
 + (instancetype)sharedClient
 {
-    static OMHClient *_sharedClient = nil;
-    
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSData *encodedClient = [defaults objectForKey:@"OMHClient"];
-        if (encodedClient != nil) {
-            _sharedClient = (OMHClient *)[NSKeyedUnarchiver unarchiveObjectWithData:encodedClient];
-        } else {
-            _sharedClient = [[self alloc] initPrivate];
+    if (_sharedClient == nil) {
+        OMHClient *client = nil;
+        NSString *signedInUserEmail = [self signedInUserEmail];
+        
+        if (signedInUserEmail != nil) {
+            NSData *encodedClient = [self encodedClientForEmail:signedInUserEmail];
+            
+            if (encodedClient != nil) {
+                client = (OMHClient *)[NSKeyedUnarchiver unarchiveObjectWithData:encodedClient];
+            }
         }
-    });
+        
+        if (client == nil) {
+            client = [[self alloc] initPrivate];
+        }
+        
+        _sharedClient = client;
+    }
     
     return _sharedClient;
+}
+
++ (void)releaseShared
+{
+    _sharedClient = nil;
+}
+
++ (NSString *)archiveKeyForEmail:(NSString *)email
+{
+    return [NSString stringWithFormat:@"OMHClient_%@", email];
+}
+
++ (NSData *)encodedClientForEmail:(NSString *)email
+{
+    OMHLog(@"unarchiving client for email: %@", email);
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    return [defaults objectForKey:[self archiveKeyForEmail:email]];
 }
 
 - (instancetype)init
@@ -60,16 +113,17 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
 
 - (void)commonInit
 {
-    //    [self.gppSignIn signOut]; // TODO: remove
+    [self.httpSessionManager.reachabilityManager startMonitoring];
+    [OMHClient gppSignIn].delegate = self;
 }
 
 - (instancetype)initPrivate
 {
     self = [super init];
     if (self) {
-        [self commonInit];
         
         self.pendingDataPoints = [NSMutableArray array];
+        [self commonInit];
     }
     return self;
 }
@@ -81,10 +135,9 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
         _dsuAccessToken = [decoder decodeObjectForKey:@"client.dsuAccessToken"];
         _dsuRefreshToken = [decoder decodeObjectForKey:@"client.dsuRefreshToken"];
         _pendingDataPoints = [decoder decodeObjectForKey:@"client.pendingDataPoints"];
-//        if (_pendingDataPoints == nil) _pendingDataPoints = [NSMutableArray array]; // TODO: remove
-        [_pendingDataPoints removeAllObjects];
         _accessTokenDate = [decoder decodeObjectForKey:@"client.accessTokenDate"];
         _accessTokenValidDuration = [decoder decodeDoubleForKey:@"client.accessTokenValidDuration"];
+        [self commonInit];
     }
     
     return self;
@@ -99,49 +152,156 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
     [encoder encodeDouble:self.accessTokenValidDuration forKey:@"client.accessTokenValidDuration"];
 }
 
-
+- (void)unarchivePendingDataPointsForEmail:(NSString *)email
+{
+    NSData *encodedClient = [OMHClient encodedClientForEmail:email];
+    if (encodedClient != nil) {
+        OMHClient *archivedClient = (OMHClient *)[NSKeyedUnarchiver unarchiveObjectWithData:encodedClient];
+        if (archivedClient != nil) {
+            self.pendingDataPoints = archivedClient.pendingDataPoints;
+            [self uploadPendingDataPoints];
+        }
+    }
+}
 
 - (void)saveClientState
 {
-    NSLog(@"saving client state");
+    OMHLog(@"saving client state, pending: %d", (int)self.pendingDataPoints.count);
+    NSString *signedInUserEmail = [OMHClient signedInUserEmail];
+    if (signedInUserEmail == nil) {
+        OMHLog(@"attempting to save client with no signed-in user");
+        return;
+    }
+    
     NSData *encodedClient = [NSKeyedArchiver archivedDataWithRootObject:self];
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults setObject:encodedClient forKey:@"OMHClient"];
+    [userDefaults setObject:encodedClient forKey:[OMHClient archiveKeyForEmail:signedInUserEmail]];
     [userDefaults synchronize];
 }
 
 - (NSString *)encodedClientIDAndSecret
 {
-    if (self.appDSUClientID == nil || self.appDSUClientSecret == nil) return nil;
+    static NSString *sEncodedIDAndSecret = nil;
     
-    NSString *string = [NSString stringWithFormat:@"%@:%@",
-                        self.appDSUClientID,
-                        self.appDSUClientSecret];
+    if (sEncodedIDAndSecret == nil) {
+        NSString *appDSUClientID = [OMHClient appDSUClientID];
+        NSString *appDSUClientSecret = [OMHClient appDSUClientSecret];
+        
+        if (appDSUClientID != nil && appDSUClientSecret != nil) {
+            NSString *string = [NSString stringWithFormat:@"%@:%@",
+                                appDSUClientID,
+                                appDSUClientSecret];
+            
+            NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
+            sEncodedIDAndSecret = [data base64EncodedStringWithOptions:0];
+        }
+    }
     
-    NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
-    NSLog(@"encoded cliend id and secret: %@", [data base64EncodedStringWithOptions:0]);
-    return [data base64EncodedStringWithOptions:0];
-    
+    return sEncodedIDAndSecret;
 }
 
 
 #pragma mark - Property Accessors
 
-- (void)setAppGoogleClientID:(NSString *)appGoogleClientID
++ (NSString *)appGoogleClientID
 {
-    _appGoogleClientID = appGoogleClientID;
-    self.gppSignIn.clientID = appGoogleClientID;
+    return [[NSUserDefaults standardUserDefaults] stringForKey:kAppGoogleClientIDKey];
 }
 
-- (void)setServerGoogleClientID:(NSString *)serverGoogleClientID
++ (void)setAppGoogleClientID:(NSString *)appGoogleClientID
 {
-    _serverGoogleClientID = serverGoogleClientID;
-    self.gppSignIn.homeServerClientID = serverGoogleClientID;
+    [self gppSignIn].clientID = appGoogleClientID;
+    [[NSUserDefaults standardUserDefaults] setObject:appGoogleClientID forKey:kAppGoogleClientIDKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++ (NSString *)serverGoogleClientID
+{
+    return [[NSUserDefaults standardUserDefaults] stringForKey:kServerGoogleClientIDKey];
+}
+
++ (void)setServerGoogleClientID:(NSString *)serverGoogleClientID
+{
+    [self gppSignIn].homeServerClientID = serverGoogleClientID;
+    [[NSUserDefaults standardUserDefaults] setObject:serverGoogleClientID forKey:kServerGoogleClientIDKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++ (NSString *)appDSUClientID
+{
+    return [[NSUserDefaults standardUserDefaults] stringForKey:kAppDSUClientIDKey];
+}
+
++ (void)setAppDSUClientID:(NSString *)appDSUClientID
+{
+    [[NSUserDefaults standardUserDefaults] setObject:appDSUClientID forKey:kAppDSUClientIDKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++ (NSString *)appDSUClientSecret
+{
+    return [[NSUserDefaults standardUserDefaults] stringForKey:kAppDSUClientSecretKey];
+}
+
++ (void)setAppDSUClientSecret:(NSString *)appDSUClientSecret
+{
+    [[NSUserDefaults standardUserDefaults] setObject:appDSUClientSecret forKey:kAppDSUClientSecretKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++ (NSString *)signedInUserEmail
+{
+    return [[NSUserDefaults standardUserDefaults] stringForKey:kSignedInUserEmailKey];
+}
+
++ (void)setSignedInUserEmail:(NSString *)signedInUserEmail
+{
+    [[NSUserDefaults standardUserDefaults] setObject:signedInUserEmail forKey:kSignedInUserEmailKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++ (NSString *)homeServerAuthorizationCode
+{
+    return [[NSUserDefaults standardUserDefaults] stringForKey:kHomeServerCodeKey];
+}
+
++ (void)setHomeServerAuthorizationCode:(NSString *)serverCode
+{
+    [[NSUserDefaults standardUserDefaults] setObject:serverCode forKey:kHomeServerCodeKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+
+- (NSMutableArray *)pendingDataPoints
+{
+    if (_pendingDataPoints == nil) {
+        _pendingDataPoints = [NSMutableArray array];
+    }
+    return _pendingDataPoints;
+}
+
+- (NSMutableArray *)authRefreshCompletionBlocks
+{
+    if (_authRefreshCompletionBlocks == nil) {
+        _authRefreshCompletionBlocks = [NSMutableArray array];
+    }
+    return _authRefreshCompletionBlocks;
 }
 
 - (BOOL)isSignedIn
 {
     return (self.dsuAccessToken != nil && self.dsuRefreshToken != nil);
+}
+
+- (BOOL)isReachable
+{
+    if (!self.isSignedIn) return NO;
+    return self.httpSessionManager.reachabilityManager.isReachable;
+}
+
+- (int)pendingDataPointCount
+{
+    return (int)self.pendingDataPoints.count;
 }
 
 
@@ -157,7 +317,6 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
         [_httpSessionManager.reachabilityManager setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
             [weakSelf reachabilityStatusDidChange:status];
         }];
-        [_httpSessionManager.reachabilityManager startMonitoring];
         
         // enable network activity indicator
         [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
@@ -165,13 +324,86 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
     return _httpSessionManager;
 }
 
+- (NSInteger)statusCodeFromSessionTask:(NSURLSessionTask *)task
+{
+    NSURLResponse *response = task.response;
+    if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
+        return ((NSHTTPURLResponse *)response).statusCode;
+    }
+    else {
+        return 0;
+    }
+}
+
+- (void)getRequest:(NSString *)request
+    withParameters:(NSDictionary *)parameters
+   completionBlock:(void (^)(id responseObject, NSError *error, NSInteger statusCode))block
+{
+    [self.httpSessionManager GET:request parameters:parameters success:^(NSURLSessionDataTask *task, id responseObject) {
+        // request succeeded
+        block(responseObject, nil, [self statusCodeFromSessionTask:task]);
+        
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        // request failed
+        block(nil, error, [self statusCodeFromSessionTask:task]);
+    }];
+}
+
+- (void)postRequest:(NSString *)request
+     withParameters:(NSDictionary *)parameters
+    completionBlock:(void (^)(id responseObject, NSError *error, NSInteger statusCode))block
+{
+    [self.httpSessionManager POST:request parameters:parameters success:^(NSURLSessionDataTask *task, id responseObject) {
+        // request succeeded
+        block(responseObject, nil, [self statusCodeFromSessionTask:task]);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        // request failed
+        block(nil, error, [self statusCodeFromSessionTask:task]);
+    }];
+}
+
+- (void)authenticatedGetRequest:(NSString *)request
+                 withParameters:(NSDictionary *)parameters
+                completionBlock:(void (^)(id responseObject, NSError *error, NSInteger statusCode))block
+{
+    __block NSString *blockRequest = [request copy];
+    __block NSDictionary *blockParameters = [parameters copy];
+    __block void (^blockCompletionBlock)(id responseObject, NSError *error, NSInteger statusCode) = [block copy];
+    [self refreshAuthenticationWithCompletionBlock:^(NSError *error) {
+        if (error == nil) {
+            [self getRequest:blockRequest withParameters:blockParameters completionBlock:blockCompletionBlock];
+        }
+        else {
+            blockCompletionBlock(nil, error, 0);
+        }
+    }];
+}
+
+- (void)authenticatedPostRequest:(NSString *)request withParameters:(NSDictionary *)parameters
+                completionBlock:(void (^)(id responseObject, NSError *error, NSInteger statusCode))block
+{
+    __block NSString *blockRequest = [request copy];
+    __block NSDictionary *blockParameters = [parameters copy];
+    __block void (^blockCompletionBlock)(id responseObject, NSError *error, NSInteger statusCode) = [block copy];
+    [self refreshAuthenticationWithCompletionBlock:^(NSError *error) {
+        if (error == nil) {
+            [self postRequest:blockRequest withParameters:blockParameters completionBlock:blockCompletionBlock];
+        }
+        else {
+            blockCompletionBlock(nil, error, 0);
+        }
+    }];
+}
+
 - (void)reachabilityStatusDidChange:(AFNetworkReachabilityStatus)status
 {
+    if (!self.isSignedIn) return;
+    OMHLog(@"reachability status changed: %d", (int)status);
     // when network becomes reachable, re-authenticate user
     // and upload any pending survey responses
     if (status > AFNetworkReachabilityStatusNotReachable) {
-        if ([self accessTokenHasExpired]) {
-            [self refreshAuthentication];
+        if ([self accessTokenHasExpired] || !self.isAuthenticated) {
+            [self refreshAuthenticationWithCompletionBlock:nil];
         }
         else {
             [self uploadPendingDataPoints];
@@ -182,6 +414,7 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
 - (void)setDSUSignInHeader
 {
     NSString *token = [self encodedClientIDAndSecret];
+    OMHLog(@"setting dsu sign in header with token: %@", token);
     if (token) {
         self.httpSessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
         NSString *auth = [NSString stringWithFormat:@"Basic %@", token];
@@ -191,7 +424,7 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
 
 - (void)setDSUUploadHeader
 {
-    NSLog(@"setting dsu upload header: %@", self.dsuAccessToken);
+    OMHLog(@"setting dsu upload header: %@", self.dsuAccessToken);
     if (self.dsuAccessToken) {
         self.httpSessionManager.requestSerializer = [AFJSONRequestSerializer serializer];
         NSString *auth = [NSString stringWithFormat:@"Bearer %@", self.dsuAccessToken];
@@ -215,32 +448,60 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
     return (comp == NSOrderedAscending);
 }
 
-- (void)refreshAuthentication
+- (void)refreshAuthenticationWithCompletionBlock:(void (^)(NSError *error))block
 {
+    OMHLog(@"refresh authentication, isAuthenticating: %d, refreshToken: %d", self.isAuthenticating, (self.dsuRefreshToken != nil));
+    
+    if (block) {
+        [self.authRefreshCompletionBlocks addObject:[block copy]];
+    }
+    
+    if (self.isAuthenticating || self.dsuRefreshToken == nil) return;
+    
+    self.isAuthenticating = YES;
     [self setDSUSignInHeader];
     
     NSString *request = @"oauth/token";
     NSDictionary *parameters = @{@"refresh_token" : self.dsuRefreshToken,
                                  @"grant_type" : @"refresh_token"};
     
-    [self.httpSessionManager POST:request parameters:parameters success:^(NSURLSessionDataTask *task, id responseObject) {
-        NSLog(@"refresh authentication success: %@", responseObject);
+    [self postRequest:request withParameters:parameters completionBlock:^(id responseObject, NSError *error, NSInteger statusCode) {
+        if (error == nil) {
+            OMHLog(@"refresh authentication success");
+            
+            [self storeAuthenticationResponse:(NSDictionary *)responseObject];
+            [self setDSUUploadHeader];
+            self.isAuthenticated = YES;
+            [self uploadPendingDataPoints];
+        }
+        else {
+            OMHLog(@"refresh authentiation failed: %@", error);
+            self.isAuthenticated = NO;
+        }
         
-        [self storeAuthenticationResponse:(NSDictionary *)responseObject];
-        [self setDSUUploadHeader];
-        [self uploadPendingDataPoints];
+        self.isAuthenticating = NO;
         
-    } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"refresh authentiation failed: %@", error);
+        for (void (^completionBlock)(NSError *) in self.authRefreshCompletionBlocks) {
+            completionBlock(error);
+        }
+        [self.authRefreshCompletionBlocks removeAllObjects];
     }];
 }
 
 - (void)submitDataPoint:(NSDictionary *)dataPoint
 {
-    [self.pendingDataPoints addObject:dataPoint];
+    if (!self.isSignedIn) {
+        OMHLog(@"attempting to submit data point while not signed in");
+        return;
+    }
     
-    if ([self accessTokenHasExpired]) {
-        [self refreshAuthentication];
+    [self.pendingDataPoints addObject:dataPoint];
+    [self saveClientState];
+    
+    if (self.isAuthenticating) return;
+    
+    if ([self accessTokenHasExpired] || !self.isAuthenticated) {
+        [self refreshAuthenticationWithCompletionBlock:nil];
     }
     else {
         [self uploadDataPoint:dataPoint];
@@ -249,7 +510,7 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
 
 - (void)uploadPendingDataPoints
 {
-    NSLog(@"uploading pending data points: %d", (int)self.pendingDataPoints.count);
+    OMHLog(@"uploading pending data points: %d, isAuthenticating: %d", (int)self.pendingDataPoints.count, self.isAuthenticating);
     
     for (NSDictionary *dataPoint in self.pendingDataPoints) {
         [self uploadDataPoint:dataPoint];
@@ -258,18 +519,28 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
 
 - (void)uploadDataPoint:(NSDictionary *)dataPoint
 {
-    NSLog(@"uploading data point: %@", dataPoint);
-    
     NSString *request = @"dataPoints";
     
-    [self.httpSessionManager POST:request parameters:dataPoint
-                          success:^(NSURLSessionDataTask *task, id responseObject) {
-                              NSLog(@"upload data point succeeded: %@", responseObject);
-                              NSLog(@"array contains data point: %d", [self.pendingDataPoints containsObject:dataPoint]);
-                              [self.pendingDataPoints removeObject:dataPoint];
-                          } failure:^(NSURLSessionDataTask *task, NSError *error) {
-                              NSLog(@"upload data point failed: %@", error);
-                          }];
+    __block NSDictionary *blockDataPoint = dataPoint;
+    [self postRequest:request withParameters:dataPoint completionBlock:^(id responseObject, NSError *error, NSInteger statusCode) {
+        if (error == nil) {
+            OMHLog(@"upload data point succeeded: %@", blockDataPoint[@"header"][@"id"]);
+            [self.pendingDataPoints removeObject:dataPoint];
+            [self saveClientState];
+            if (self.uploadDelegate) {
+                [self.uploadDelegate OMHClient:self didUploadDataPoint:blockDataPoint];
+            }
+        }
+        else {
+            OMHLog(@"upload data point failed: %@, status code: %d", blockDataPoint[@"header"][@"id"], (int)statusCode);
+            if (statusCode == 409) {
+                OMHLog(@"removing conflicting data point, is pending: %d", [self.pendingDataPoints containsObject:blockDataPoint]);
+                // conflict, data point already uploaded
+                [self.pendingDataPoints removeObject:blockDataPoint];
+                [self saveClientState];
+            }
+        }
+    }];
 }
 
 
@@ -283,17 +554,16 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
     return googleButton;
 }
 
-- (GPPSignIn *)gppSignIn
++ (GPPSignIn *)gppSignIn
 {
+    static GPPSignIn *_gppSignIn = nil;
     if (_gppSignIn == nil) {
         GPPSignIn *signIn = [GPPSignIn sharedInstance];
         signIn.shouldFetchGooglePlusUser = YES;
         signIn.shouldFetchGoogleUserEmail = YES;
-        //        signIn.attemptSSO = YES;
         
         signIn.scopes = @[ @"profile" ];
         _gppSignIn = signIn;
-        _gppSignIn.delegate = self;
     }
     return _gppSignIn;
 }
@@ -301,46 +571,65 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
 - (void)finishedWithAuth: (GTMOAuth2Authentication *)auth
                    error: (NSError *) error
 {
-    NSLog(@"Client received google error %@ and auth object %@",error, auth);
+    OMHLog(@"Client received google error %@ and auth object %@",error, auth);
     if (error) {
         if (self.signInDelegate) {
-            [self.signInDelegate OMHClientSignInFinishedWithError:error];
+            [self.signInDelegate OMHClient:self signInFinishedWithError:error];
         }
     }
     else {
         NSString *serverCode = [GPPSignIn sharedInstance].homeServerAuthorizationCode;
-        NSLog(@"serverCode: %@", serverCode);
+        if (serverCode == nil) serverCode = [OMHClient homeServerAuthorizationCode];
+        
         if (serverCode != nil) {
+            OMHLog(@"signed in user email: %@", auth.userEmail);
+            [OMHClient setSignedInUserEmail:auth.userEmail];
+            [OMHClient setHomeServerAuthorizationCode:serverCode];
+            [self unarchivePendingDataPointsForEmail:auth.userEmail];
             [self signInToDSUWithServerCode:serverCode];
         }
         else {
-            NSLog(@"failed to receive server code from google auth");
+            OMHLog(@"failed to receive server code from google auth");
+            [self signOut];
+            if (self.signInDelegate) {
+                NSError *serverCodeError = [NSError errorWithDomain:@"OMHClientServerCodeError" code:0 userInfo:nil];
+                [self.signInDelegate OMHClient:self signInFinishedWithError:serverCodeError];
+            }
+            
         }
     }
 }
 
 - (void)signInToDSUWithServerCode:(NSString *)serverCode
 {
+    NSString *appDSUClientID = [OMHClient appDSUClientID];
+    if (serverCode == nil || appDSUClientID == nil) return;
     [self setDSUSignInHeader];
     
     NSString *request =  @"google-signin";
     NSString *code = [NSString stringWithFormat:@"fromApp_%@", serverCode];
-    NSDictionary *parameters = @{@"code": code, @"client_id" : self.appDSUClientID};
+    NSDictionary *parameters = @{@"code": code, @"client_id" : appDSUClientID};
     
-    [self.httpSessionManager GET:request parameters:parameters success:^(NSURLSessionDataTask *task, id responseObject) {
-        NSLog(@"DSU login success, response object: %@", responseObject);
-        [self storeAuthenticationResponse:(NSDictionary *)responseObject];
-        [self setDSUUploadHeader];
-        
-        if (self.signInDelegate != nil) {
-            [self.signInDelegate OMHClientSignInFinishedWithError:nil];
+    self.isAuthenticating = YES;
+    [self getRequest:request withParameters:parameters completionBlock:^(id responseObject, NSError *error, NSInteger statusCode) {
+        if (error == nil) {
+            OMHLog(@"DSU login success, response object: %@", responseObject);
+            [self storeAuthenticationResponse:(NSDictionary *)responseObject];
+            [self setDSUUploadHeader];
+            self.isAuthenticated = YES;
+            self.isAuthenticating = NO;
+            
+            if (self.signInDelegate != nil) {
+                [self.signInDelegate OMHClient:self signInFinishedWithError:nil];
+            }
         }
-        
-    } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"DSU login failure, error: %@", error);
-        
-        if (self.signInDelegate != nil) {
-            [self.signInDelegate OMHClientSignInFinishedWithError:error];
+        else {
+            OMHLog(@"DSU login failure, error: %@", error);
+            self.isAuthenticating = NO;
+            
+            if (self.signInDelegate != nil) {
+                [self.signInDelegate OMHClient:self signInFinishedWithError:error];
+            }
         }
     }];
 }
@@ -354,12 +643,12 @@ NSString * const kDSUBaseURL = @"https://lifestreams.smalldata.io/dsu/";
 
 - (void)signOut
 {
-    [self.gppSignIn signOut];
+    OMHLog(@"sign out");
+    [[OMHClient gppSignIn] signOut];
+    [self saveClientState];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kSignedInUserEmailKey];
     
-    self.dsuAccessToken = nil;
-    self.dsuRefreshToken = nil;
-    self.accessTokenDate = nil;
-    self.accessTokenValidDuration = 0;
+    [OMHClient releaseShared];
 }
 
 @end

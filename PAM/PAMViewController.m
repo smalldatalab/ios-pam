@@ -12,6 +12,7 @@
 #import "LoginViewController.h"
 #import "ReminderViewController.h"
 #import "OMHClient.h"
+#import "AppConstants.h"
 
 #define NUM_ROWS 4
 #define NUM_COLS 4
@@ -221,34 +222,11 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
 
 #pragma mark - PAM Data Point
 
-+ (OMHSchemaID *)schemaID
-{
-    static OMHSchemaID *sSchemaID = nil;
-    if (!sSchemaID) {
-        sSchemaID = [[OMHSchemaID alloc] init];
-        sSchemaID.schemaNamespace = @"cornell";
-        sSchemaID.name = @"photographic-affect-meter-scores";
-        sSchemaID.version = @"1.0";
-    }
-    return sSchemaID;
-}
-
-+ (OMHAcquisitionProvenance *)acquisitionProvenance
-{
-    static OMHAcquisitionProvenance *sProvenance = nil;
-    if (!sProvenance) {
-        sProvenance = [[OMHAcquisitionProvenance alloc] init];
-        sProvenance.sourceName = @"PAM-iOS-1.0";
-        sProvenance.modality = OMHAcquisitionProvenanceModalitySelfReported;
-    }
-    return sProvenance;
-}
-
 - (NSDictionary *)createDataPointForIndex:(int)index
 {
     OMHDataPoint *dataPoint = [OMHDataPoint templateDataPoint];
-    dataPoint.header.schemaID = [PAMViewController schemaID];
-    dataPoint.header.acquisitionProvenance = [PAMViewController acquisitionProvenance];
+    dataPoint.header.schemaID = [AppConstants pamSchemaID];
+    dataPoint.header.acquisitionProvenance = [AppConstants pamAcquisitionProvenance];
     dataPoint.body = [self dataPointBodyForIndex:index];
     return dataPoint;
 }

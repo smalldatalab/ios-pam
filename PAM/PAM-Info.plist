@@ -9,7 +9,7 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.openmhealth.ios.PAM</string>
+	<string>org.openmhealth.ios.PAM</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -26,15 +26,15 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>com.openmhealth.ios.PAM</string>
+			<string>org.openmhealth.ios.PAM</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.openmhealth.ios.PAM</string>
+				<string>org.openmhealth.ios.PAM</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>2.2</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIRequiredDeviceCapabilities</key>
