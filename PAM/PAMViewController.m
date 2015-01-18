@@ -60,9 +60,13 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
     self.navigationItem.leftBarButtonItem = logoutButton;
     self.navigationItem.rightBarButtonItem = reminderButton;
     
-    UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+    UIBarButtonItem *spacer1 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
                                                                             target:nil
-                                                                            action:nil];
+                                                                             action:nil];
+    
+    UIBarButtonItem *spacer2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+                                                                             target:nil
+                                                                             action:nil];
     
     UIBarButtonItem *reloadButton = [[UIBarButtonItem alloc] initWithTitle:@"Reload Images"
                                                                      style:UIBarButtonItemStylePlain
@@ -70,14 +74,14 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
                                                                     action:@selector(reloadImages)];
     
     
-    UIBarButtonItem *submitButton = [[UIBarButtonItem alloc] initWithTitle:@"Submit"
-                                                                     style:UIBarButtonItemStylePlain
-                                                                    target:self
-                                                                    action:@selector(submit)];
-    submitButton.enabled = NO;
-    self.submitButton = submitButton;
+//    UIBarButtonItem *submitButton = [[UIBarButtonItem alloc] initWithTitle:@"Submit"
+//                                                                     style:UIBarButtonItemStylePlain
+//                                                                    target:self
+//                                                                    action:@selector(submit)];
+//    submitButton.enabled = NO;
+//    self.submitButton = submitButton;
     
-    self.toolbarItems = @[submitButton, spacer, reloadButton];
+    self.toolbarItems = @[spacer1, reloadButton, spacer2];
     self.navigationController.toolbarHidden = NO;
     
     
@@ -126,7 +130,7 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
 {
     static NSDateFormatter *dateFormatter = nil;
     if (!dateFormatter) {
-        NSString *formatString = [NSDateFormatter dateFormatFromTemplate:@"MMMM d h:m" options:0
+        NSString *formatString = [NSDateFormatter dateFormatFromTemplate:@"MMMM d h:m:s" options:0
                                                                   locale:[NSLocale currentLocale]];
         dateFormatter = [[NSDateFormatter alloc] init];
         [dateFormatter setDateFormat:formatString];
@@ -182,14 +186,37 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
 
 - (void)imageCellPressed:(PAMImageCell *)cell
 {
-    for (PAMImageCell *cell in self.imageCells) {
-        cell.selected = NO;
-    }
-    cell.selected = YES;
-    self.selectedCell = cell;
-    self.submitButton.enabled = YES;
+    NSDictionary *dataPoint = [self createDataPointForIndex:cell.index];
+    [[OMHClient sharedClient] submitDataPoint:dataPoint];
+    
+//    [self imageCellPressed:nil];
+    [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kLastSubmitDateKey];
+//    self.submitButton.enabled = NO;
+    [self reloadImages];
+    [self updateLastSubmitLabel];
+    
+//    for (PAMImageCell *cell in self.imageCells) {
+//        cell.selected = NO;
+//    }
+//    cell.selected = YES;
+//    self.selectedCell = cell;
+//    self.submitButton.enabled = YES;
+//    [self submit];
     
 //    NSLog(@"index: %d, PAM: %@", cell.index, [self dataPointBodyForIndex:cell.index]);
+}
+
+-(void)submit
+{
+    NSDictionary *dataPoint = [self createDataPointForIndex:self.selectedCell.index];
+    [[OMHClient sharedClient] submitDataPoint:dataPoint];
+    
+    [self imageCellPressed:nil];
+    [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kLastSubmitDateKey];
+    self.submitButton.enabled = NO;
+    [self reloadImages];
+    [self updateLastSubmitLabel];
+    
 }
 
 // Load new image in each unselected cell
@@ -204,19 +231,6 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
 {
     [[OMHClient sharedClient] signOut];
     [self presentViewController:[[LoginViewController alloc] init] animated:YES completion:nil];
-}
-
--(void)submit
-{
-    NSDictionary *dataPoint = [self createDataPointForIndex:self.selectedCell.index];
-    [[OMHClient sharedClient] submitDataPoint:dataPoint];
-    
-    [self imageCellPressed:nil];
-    [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kLastSubmitDateKey];
-    self.submitButton.enabled = NO;
-    [self reloadImages];
-    [self updateLastSubmitLabel];
-    
 }
 
 
