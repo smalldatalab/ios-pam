@@ -46,6 +46,7 @@
 		1EB1AE251A20BB7100FEFA1F /* UIView+AutoLayoutHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB1AE241A20BB7100FEFA1F /* UIView+AutoLayoutHelpers.m */; };
 		1EB1AE281A20F38200FEFA1F /* PAMImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB1AE271A20F38200FEFA1F /* PAMImageCell.m */; };
 		1EB2C40F1A22318000DC1A06 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB2C40E1A22318000DC1A06 /* LoginViewController.m */; };
+		1EE737E81A8508E9008913E0 /* OMHApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EE737E71A8508E9008913E0 /* OMHApplication.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -122,6 +123,8 @@
 		1EB1AE271A20F38200FEFA1F /* PAMImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PAMImageCell.m; sourceTree = "<group>"; };
 		1EB2C40D1A22318000DC1A06 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		1EB2C40E1A22318000DC1A06 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
+		1EE737E61A8508E9008913E0 /* OMHApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OMHApplication.h; sourceTree = "<group>"; };
+		1EE737E71A8508E9008913E0 /* OMHApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OMHApplication.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -255,6 +258,8 @@
 				1E8442271A3F056300E91382 /* OMHClientDSUConnector.m */,
 				1E8442281A3F056300E91382 /* OMHDataPoint.h */,
 				1E8442291A3F056300E91382 /* OMHDataPoint.m */,
+				1EE737E61A8508E9008913E0 /* OMHApplication.h */,
+				1EE737E71A8508E9008913E0 /* OMHApplication.m */,
 			);
 			path = OMHClient;
 			sourceTree = "<group>";
@@ -411,6 +416,7 @@
 				1E8442301A3F056300E91382 /* AFSecurityPolicy.m in Sources */,
 				1E8442391A3F056300E91382 /* OMHClientDSUConnector.m in Sources */,
 				1EB1AE251A20BB7100FEFA1F /* UIView+AutoLayoutHelpers.m in Sources */,
+				1EE737E81A8508E9008913E0 /* OMHApplication.m in Sources */,
 				1E8442321A3F056300E91382 /* AFURLRequestSerialization.m in Sources */,
 				1E84422F1A3F056300E91382 /* AFNetworkReachabilityManager.m in Sources */,
 				1E8442331A3F056300E91382 /* AFURLResponseSerialization.m in Sources */,

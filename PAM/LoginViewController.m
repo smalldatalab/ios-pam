@@ -76,6 +76,8 @@
     self.signInFailureLabel = label;
 }
 
+#pragma mark - OMHSignInDelegate
+
 - (void)OMHClient:(OMHClient *)client signInFinishedWithError:(NSError *)error
 {
     [self.activityIndicator stopAnimating];
@@ -95,7 +97,6 @@
         [(AppDelegate *)[UIApplication sharedApplication].delegate userDidLogin];
     }
 }
-
 
 
 
