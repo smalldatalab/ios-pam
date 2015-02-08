@@ -28,7 +28,7 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
 @property (strong, nonatomic) NSMutableArray *pamMeasures;
 
 @property (nonatomic, strong) UIBarButtonItem *logoutButton;
-@property (nonatomic, strong) UIBarButtonItem *submitButton;
+@property (nonatomic, strong) UIBarButtonItem *reloadButton;
 @property (nonatomic, strong) NSArray *imageCells;
 @property (nonatomic, strong) PAMImageCell *selectedCell;
 @property (nonatomic, strong) UILabel *lastSubmitLabel;
@@ -72,18 +72,10 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
                                                                      style:UIBarButtonItemStylePlain
                                                                     target:self
                                                                     action:@selector(reloadImages)];
-    
-    
-//    UIBarButtonItem *submitButton = [[UIBarButtonItem alloc] initWithTitle:@"Submit"
-//                                                                     style:UIBarButtonItemStylePlain
-//                                                                    target:self
-//                                                                    action:@selector(submit)];
-//    submitButton.enabled = NO;
-//    self.submitButton = submitButton;
+    self.reloadButton = reloadButton;
     
     self.toolbarItems = @[spacer1, reloadButton, spacer2];
     self.navigationController.toolbarHidden = NO;
-    
     
     [self createPAMGrid];
     [self updateLastSubmitLabel];
@@ -110,7 +102,7 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
     UILabel *newLabel = [[UILabel alloc] init];
     newLabel.textAlignment = NSTextAlignmentCenter;
     newLabel.font = [UIFont systemFontOfSize:12.0];
-    newLabel.text = [NSString stringWithFormat:@"Last submit: %@", [self formattedDate:date]];
+    newLabel.text = [NSString stringWithFormat:@"Last submission: %@", [self formattedDate:date]];
     newLabel.alpha = 0.0;
     self.lastSubmitLabel = newLabel;
     
@@ -130,7 +122,7 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
 {
     static NSDateFormatter *dateFormatter = nil;
     if (!dateFormatter) {
-        NSString *formatString = [NSDateFormatter dateFormatFromTemplate:@"MMMM d h:m:s" options:0
+        NSString *formatString = [NSDateFormatter dateFormatFromTemplate:@"MMMM d h:m" options:0
                                                                   locale:[NSLocale currentLocale]];
         dateFormatter = [[NSDateFormatter alloc] init];
         [dateFormatter setDateFormat:formatString];
@@ -186,37 +178,56 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
 
 - (void)imageCellPressed:(PAMImageCell *)cell
 {
+    UIImage *image = [cell backgroundImageForState:UIControlStateNormal];
+    [self presentSubmitAnimationWithImage:image frame:cell.frame];
+    
     NSDictionary *dataPoint = [self createDataPointForIndex:cell.index];
     [[OMHClient sharedClient] submitDataPoint:dataPoint];
-    
-//    [self imageCellPressed:nil];
     [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kLastSubmitDateKey];
-//    self.submitButton.enabled = NO;
-    [self reloadImages];
-    [self updateLastSubmitLabel];
     
-//    for (PAMImageCell *cell in self.imageCells) {
-//        cell.selected = NO;
-//    }
-//    cell.selected = YES;
-//    self.selectedCell = cell;
-//    self.submitButton.enabled = YES;
-//    [self submit];
-    
-//    NSLog(@"index: %d, PAM: %@", cell.index, [self dataPointBodyForIndex:cell.index]);
 }
 
--(void)submit
+- (void)presentSubmitAnimationWithImage:(UIImage *)image frame:(CGRect)frame
 {
-    NSDictionary *dataPoint = [self createDataPointForIndex:self.selectedCell.index];
-    [[OMHClient sharedClient] submitDataPoint:dataPoint];
+    UIView *view = [[UIView alloc] init];
+    view.backgroundColor = [UIColor blackColor];
     
-    [self imageCellPressed:nil];
-    [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kLastSubmitDateKey];
-    self.submitButton.enabled = NO;
-    [self reloadImages];
-    [self updateLastSubmitLabel];
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
     
+    UILabel *label = [[UILabel alloc] init];
+    label.text = @"Submitted";
+    label.textColor = [UIColor whiteColor];
+    [label sizeToFit];
+    
+    [view addSubview:imageView];
+    [view addSubview:label];
+    
+    [view constrainChildToDefaultHorizontalInsets:imageView];
+    [view constrainChild:imageView toHorizontalInsets:UIEdgeInsetsMake(0, 40, 0, 40)];
+    [imageView constrainEqualWidthAndHeight];
+    [imageView centerVerticallyInView:view];
+    
+    [label positionBelowElementWithDefaultMargin:imageView];
+    [label centerHorizontallyInView:view];
+    
+    [self.view addSubview:view];
+    [self.view constrainChild:view toMargins:UIEdgeInsetsZero];
+    
+    view.alpha = 0.0;
+    self.reloadButton.enabled = NO;
+    
+    [UIView animateWithDuration:0.25 animations:^{
+        view.alpha = 1.0;
+    } completion:^(BOOL finished) {
+        [self reloadImages];
+        [UIView animateWithDuration:0.25 delay:3.0 options:0 animations:^{
+            view.alpha = 0.0;
+        } completion:^(BOOL finished) {
+            [view removeFromSuperview];
+            [self updateLastSubmitLabel];
+            self.reloadButton.enabled = YES;
+        }];
+    }];
 }
 
 // Load new image in each unselected cell
