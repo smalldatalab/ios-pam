@@ -202,7 +202,6 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
     [view addSubview:imageView];
     [view addSubview:label];
     
-    [view constrainChildToDefaultHorizontalInsets:imageView];
     [view constrainChild:imageView toHorizontalInsets:UIEdgeInsetsMake(0, 40, 0, 40)];
     [imageView constrainEqualWidthAndHeight];
     [imageView centerVerticallyInView:view];
