@@ -33,16 +33,25 @@
     header.font = [UIFont fontWithName:@"MarkerFelt-Thin" size:65.0];
     header.textAlignment = NSTextAlignmentCenter;
     
+    [self.view addSubview:header];
+    [self.view constrainChildToDefaultHorizontalInsets:header];
+    [header constrainToTopInParentWithMargin:80];
+    
+    [self setupSignInButton];
+}
+
+- (void)setupSignInButton
+{
+    if (self.signInButton) {
+        [self.signInButton removeFromSuperview];
+        self.signInButton = nil;
+    }
+    
     UIButton *googleButton = [OMHClient googleSignInButton];
     [googleButton addTarget:self action:@selector(signInButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
-    [self.view addSubview:header];
     [self.view addSubview:googleButton];
-    
-    [self.view constrainChildToDefaultHorizontalInsets:header];
     [self.view constrainChildToDefaultHorizontalInsets:googleButton];
-    
-    [header constrainToTopInParentWithMargin:80];
     [googleButton constrainToBottomInParentWithMargin:80];
     
     [OMHClient sharedClient].signInDelegate = self;
@@ -84,9 +93,8 @@
     
     if (error != nil) {
         NSLog(@"OMHClientLoginFinishedWithError: %@", error);
+        [self setupSignInButton];
         [self presentSignInFailureMessage];
-        self.signInButton.userInteractionEnabled = YES;
-        self.signInButton.alpha = 1.0;
         return;
     }
     
