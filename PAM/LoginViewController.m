@@ -10,6 +10,7 @@
 #import "UIView+AutoLayoutHelpers.h"
 #import "AppDelegate.h"
 #import "OMHClient.h"
+#import "DSUURLViewController.h"
 
 @interface LoginViewController () <OMHSignInDelegate>
 
@@ -36,6 +37,14 @@
     [self.view addSubview:header];
     [self.view constrainChildToDefaultHorizontalInsets:header];
     [header constrainToTopInParentWithMargin:80];
+    
+    UIButton *settings = [UIButton buttonWithType:UIButtonTypeSystem];
+    [settings setImage:[UIImage imageNamed:@"settings"] forState:UIControlStateNormal];
+    [settings addTarget:self action:@selector(presentSettingsViewController) forControlEvents:UIControlEventTouchUpInside];
+    [settings constrainSize:CGSizeMake(25, 25)];
+    [self.view addSubview:settings];
+    [settings constrainToLeftInParentWithMargin:10];
+    [settings constrainToBottomInParentWithMargin:10];
     
     [self setupSignInButton];
 }
@@ -83,6 +92,13 @@
     [self.view addSubview:label];
     [label centerInView:self.view];
     self.signInFailureLabel = label;
+}
+
+- (void)presentSettingsViewController
+{
+    DSUURLViewController *vc = [[DSUURLViewController alloc] init];
+    UINavigationController *navcon = [[UINavigationController alloc] initWithRootViewController:vc];
+    [self presentViewController:navcon animated:YES completion:nil];
 }
 
 #pragma mark - OMHSignInDelegate

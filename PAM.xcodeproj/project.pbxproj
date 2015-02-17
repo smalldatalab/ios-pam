@@ -47,6 +47,7 @@
 		1EB1AE281A20F38200FEFA1F /* PAMImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB1AE271A20F38200FEFA1F /* PAMImageCell.m */; };
 		1EB2C40F1A22318000DC1A06 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB2C40E1A22318000DC1A06 /* LoginViewController.m */; };
 		1EE737E81A8508E9008913E0 /* OMHApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EE737E71A8508E9008913E0 /* OMHApplication.m */; };
+		1EF853D81A909A7900A0E631 /* DSUURLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EF853D71A909A7900A0E631 /* DSUURLViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -125,6 +126,8 @@
 		1EB2C40E1A22318000DC1A06 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		1EE737E61A8508E9008913E0 /* OMHApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OMHApplication.h; sourceTree = "<group>"; };
 		1EE737E71A8508E9008913E0 /* OMHApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OMHApplication.m; sourceTree = "<group>"; };
+		1EF853D61A909A7900A0E631 /* DSUURLViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSUURLViewController.h; sourceTree = "<group>"; };
+		1EF853D71A909A7900A0E631 /* DSUURLViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSUURLViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -205,6 +208,8 @@
 				1E0BB50619F709E300877208 /* AppDelegate.m */,
 				1EB2C40D1A22318000DC1A06 /* LoginViewController.h */,
 				1EB2C40E1A22318000DC1A06 /* LoginViewController.m */,
+				1EF853D61A909A7900A0E631 /* DSUURLViewController.h */,
+				1EF853D71A909A7900A0E631 /* DSUURLViewController.m */,
 				1E6F83BA1A24A0E700BACC0F /* ReminderViewController.h */,
 				1E6F83BB1A24A0E700BACC0F /* ReminderViewController.m */,
 				1E0BB52819F70D6F00877208 /* PAMViewController.h */,
@@ -420,6 +425,7 @@
 				1E8442321A3F056300E91382 /* AFURLRequestSerialization.m in Sources */,
 				1E84422F1A3F056300E91382 /* AFNetworkReachabilityManager.m in Sources */,
 				1E8442331A3F056300E91382 /* AFURLResponseSerialization.m in Sources */,
+				1EF853D81A909A7900A0E631 /* DSUURLViewController.m in Sources */,
 				1E84422C1A3F056300E91382 /* AFHTTPRequestOperationManager.m in Sources */,
 				1E3D872C1A6532110049F0CD /* AppConstants.m in Sources */,
 			);
