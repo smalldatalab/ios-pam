@@ -29,7 +29,7 @@
 			<string>io.smalldatalab.pam</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>org.openmhealth.ios.PAM</string>
+				<string>io.smalldatalab.pam</string>
 			</array>
 		</dict>
 	</array>
