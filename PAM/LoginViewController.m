@@ -38,13 +38,13 @@
     [self.view constrainChildToDefaultHorizontalInsets:header];
     [header constrainToTopInParentWithMargin:80];
     
-//    UIButton *settings = [UIButton buttonWithType:UIButtonTypeSystem];
-//    [settings setImage:[UIImage imageNamed:@"settings"] forState:UIControlStateNormal];
-//    [settings addTarget:self action:@selector(presentSettingsViewController) forControlEvents:UIControlEventTouchUpInside];
-//    [settings constrainSize:CGSizeMake(25, 25)];
-//    [self.view addSubview:settings];
-//    [settings constrainToLeftInParentWithMargin:10];
-//    [settings constrainToBottomInParentWithMargin:10];
+    UIButton *settings = [UIButton buttonWithType:UIButtonTypeSystem];
+    [settings setImage:[UIImage imageNamed:@"settings"] forState:UIControlStateNormal];
+    [settings addTarget:self action:@selector(presentSettingsViewController) forControlEvents:UIControlEventTouchUpInside];
+    [settings constrainSize:CGSizeMake(25, 25)];
+    [self.view addSubview:settings];
+    [settings constrainToLeftInParentWithMargin:10];
+    [settings constrainToBottomInParentWithMargin:10];
     
     [self setupSignInButton];
 }
