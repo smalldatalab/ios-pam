@@ -22,14 +22,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.title = @"Set DSU URL";
+    self.title = @"Set Server Name";
     
     UIColor* bgColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"ipad-BG-pattern"]];
     [self.view setBackgroundColor:bgColor];
     
     UILabel *warning = [[UILabel alloc] init];
     warning.numberOfLines = 0;
-    warning.text = @"Do not modify this URL unless you have been instructed by a researcher to do so.";
+    warning.text = @"Do not modify this server name unless you have been instructed by a researcher to do so.";
     [warning sizeToFit];
     
     UIView *frame = [[UIView alloc] init];
@@ -72,7 +72,7 @@
     self.navigationItem.rightBarButtonItem = doneButton;
     
     
-    UIBarButtonItem *resetButton = [[UIBarButtonItem alloc] initWithTitle:@"Reset URL" style:UIBarButtonItemStylePlain target:self action:@selector(resetURL)];
+    UIBarButtonItem *resetButton = [[UIBarButtonItem alloc] initWithTitle:@"Reset Server Name" style:UIBarButtonItemStylePlain target:self action:@selector(resetURL)];
     UIBarButtonItem *spacer1 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     UIBarButtonItem *spacer2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     self.toolbarItems = @[spacer1, resetButton, spacer2];
@@ -89,11 +89,10 @@
 
 - (void)doneButtonPressed:(id)sender
 {
-    NSLog(@"done button pressed");
     [self.textField resignFirstResponder];
     
-    NSString *title = @"Confirm DSU URL";
-    NSString *message = [NSString stringWithFormat:@"Are you sure you want to set the DSU URL to %@?", self.textField.text];
+    NSString *title = @"Confirm Server Name";
+    NSString *message = [NSString stringWithFormat:@"Are you sure you want to set the server name to %@?", self.textField.text];
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
                                                     message:message
                                                    delegate:self
@@ -104,14 +103,12 @@
 
 - (void)cancelButtonPressed:(id)sender
 {
-    NSLog(@"cancel button pressed");
     [self.textField resignFirstResponder];
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
-    NSLog(@"tf done editing");
     if (textField.text.length > 0) {
         if (![textField.text isEqualToString:[OMHClient DSUBaseURL]]) {
             self.navigationItem.rightBarButtonItem.enabled = YES;
