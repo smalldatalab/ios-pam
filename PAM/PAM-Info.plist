@@ -20,25 +20,10 @@
 	<string>1.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLName</key>
-			<string>io.smalldatalab.pam</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>io.smalldatalab.pam</string>
-			</array>
-		</dict>
-	</array>
 	<key>CFBundleVersion</key>
 	<string>9</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSPrincipalClass</key>
-	<string>OMHApplication</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>

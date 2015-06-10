@@ -20,14 +20,6 @@
 		1E0BB52A19F70D6F00877208 /* PAMViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E0BB52919F70D6F00877208 /* PAMViewController.m */; };
 		1E3D872C1A6532110049F0CD /* AppConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E3D872B1A6532110049F0CD /* AppConstants.m */; };
 		1E6F83BC1A24A0E700BACC0F /* ReminderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E6F83BB1A24A0E700BACC0F /* ReminderViewController.m */; };
-		1E8441FF1A3F052300E91382 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E8441F71A3F052300E91382 /* SystemConfiguration.framework */; };
-		1E8442001A3F052300E91382 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E8441F81A3F052300E91382 /* Security.framework */; };
-		1E8442011A3F052300E91382 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E8441F91A3F052300E91382 /* MediaPlayer.framework */; };
-		1E8442021A3F052300E91382 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E8441FA1A3F052300E91382 /* CoreText.framework */; };
-		1E8442031A3F052300E91382 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E8441FB1A3F052300E91382 /* CoreMotion.framework */; };
-		1E8442041A3F052300E91382 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E8441FC1A3F052300E91382 /* CoreLocation.framework */; };
-		1E8442051A3F052300E91382 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E8441FD1A3F052300E91382 /* AssetsLibrary.framework */; };
-		1E8442061A3F052300E91382 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E8441FE1A3F052300E91382 /* AddressBook.framework */; };
 		1E84422B1A3F056300E91382 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E84420B1A3F056300E91382 /* AFHTTPRequestOperation.m */; };
 		1E84422C1A3F056300E91382 /* AFHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E84420D1A3F056300E91382 /* AFHTTPRequestOperationManager.m */; };
 		1E84422D1A3F056300E91382 /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E84420F1A3F056300E91382 /* AFHTTPSessionManager.m */; };
@@ -38,15 +30,11 @@
 		1E8442321A3F056300E91382 /* AFURLRequestSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E84421A1A3F056300E91382 /* AFURLRequestSerialization.m */; };
 		1E8442331A3F056300E91382 /* AFURLResponseSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E84421C1A3F056300E91382 /* AFURLResponseSerialization.m */; };
 		1E8442341A3F056300E91382 /* AFURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E84421E1A3F056300E91382 /* AFURLSessionManager.m */; };
-		1E8442351A3F056300E91382 /* GoogleOpenSource.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E8442201A3F056300E91382 /* GoogleOpenSource.framework */; };
-		1E8442361A3F056300E91382 /* GooglePlus.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 1E8442211A3F056300E91382 /* GooglePlus.bundle */; };
-		1E8442371A3F056300E91382 /* GooglePlus.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E8442221A3F056300E91382 /* GooglePlus.framework */; };
 		1E8442391A3F056300E91382 /* OMHClientDSUConnector.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E8442271A3F056300E91382 /* OMHClientDSUConnector.m */; };
 		1E84423A1A3F056300E91382 /* OMHDataPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E8442291A3F056300E91382 /* OMHDataPoint.m */; };
 		1EB1AE251A20BB7100FEFA1F /* UIView+AutoLayoutHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB1AE241A20BB7100FEFA1F /* UIView+AutoLayoutHelpers.m */; };
 		1EB1AE281A20F38200FEFA1F /* PAMImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB1AE271A20F38200FEFA1F /* PAMImageCell.m */; };
 		1EB2C40F1A22318000DC1A06 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB2C40E1A22318000DC1A06 /* LoginViewController.m */; };
-		1EE737E81A8508E9008913E0 /* OMHApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EE737E71A8508E9008913E0 /* OMHApplication.m */; };
 		1EF853D81A909A7900A0E631 /* DSUURLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EF853D71A909A7900A0E631 /* DSUURLViewController.m */; };
 /* End PBXBuildFile section */
 
@@ -81,14 +69,6 @@
 		1E3D872B1A6532110049F0CD /* AppConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppConstants.m; sourceTree = "<group>"; };
 		1E6F83BA1A24A0E700BACC0F /* ReminderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReminderViewController.h; sourceTree = "<group>"; };
 		1E6F83BB1A24A0E700BACC0F /* ReminderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReminderViewController.m; sourceTree = "<group>"; };
-		1E8441F71A3F052300E91382 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		1E8441F81A3F052300E91382 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
-		1E8441F91A3F052300E91382 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
-		1E8441FA1A3F052300E91382 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
-		1E8441FB1A3F052300E91382 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
-		1E8441FC1A3F052300E91382 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
-		1E8441FD1A3F052300E91382 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
-		1E8441FE1A3F052300E91382 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		1E84420A1A3F056300E91382 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
 		1E84420B1A3F056300E91382 /* AFHTTPRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperation.m; sourceTree = "<group>"; };
 		1E84420C1A3F056300E91382 /* AFHTTPRequestOperationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperationManager.h; sourceTree = "<group>"; };
@@ -110,9 +90,6 @@
 		1E84421C1A3F056300E91382 /* AFURLResponseSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLResponseSerialization.m; sourceTree = "<group>"; };
 		1E84421D1A3F056300E91382 /* AFURLSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLSessionManager.h; sourceTree = "<group>"; };
 		1E84421E1A3F056300E91382 /* AFURLSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLSessionManager.m; sourceTree = "<group>"; };
-		1E8442201A3F056300E91382 /* GoogleOpenSource.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleOpenSource.framework; sourceTree = "<group>"; };
-		1E8442211A3F056300E91382 /* GooglePlus.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = GooglePlus.bundle; sourceTree = "<group>"; };
-		1E8442221A3F056300E91382 /* GooglePlus.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GooglePlus.framework; sourceTree = "<group>"; };
 		1E8442251A3F056300E91382 /* OMHClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OMHClient.h; sourceTree = "<group>"; };
 		1E8442261A3F056300E91382 /* OMHClientDSUConnector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OMHClientDSUConnector.h; sourceTree = "<group>"; };
 		1E8442271A3F056300E91382 /* OMHClientDSUConnector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OMHClientDSUConnector.m; sourceTree = "<group>"; };
@@ -124,8 +101,6 @@
 		1EB1AE271A20F38200FEFA1F /* PAMImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PAMImageCell.m; sourceTree = "<group>"; };
 		1EB2C40D1A22318000DC1A06 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		1EB2C40E1A22318000DC1A06 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
-		1EE737E61A8508E9008913E0 /* OMHApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OMHApplication.h; sourceTree = "<group>"; };
-		1EE737E71A8508E9008913E0 /* OMHApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OMHApplication.m; sourceTree = "<group>"; };
 		1EF853D61A909A7900A0E631 /* DSUURLViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSUURLViewController.h; sourceTree = "<group>"; };
 		1EF853D71A909A7900A0E631 /* DSUURLViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSUURLViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -136,17 +111,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1E0BB4FB19F709E300877208 /* UIKit.framework in Frameworks */,
-				1E8442371A3F056300E91382 /* GooglePlus.framework in Frameworks */,
-				1E8442351A3F056300E91382 /* GoogleOpenSource.framework in Frameworks */,
 				1E0BB4F719F709E300877208 /* Foundation.framework in Frameworks */,
-				1E8441FF1A3F052300E91382 /* SystemConfiguration.framework in Frameworks */,
-				1E8442001A3F052300E91382 /* Security.framework in Frameworks */,
-				1E8442011A3F052300E91382 /* MediaPlayer.framework in Frameworks */,
-				1E8442021A3F052300E91382 /* CoreText.framework in Frameworks */,
-				1E8442031A3F052300E91382 /* CoreMotion.framework in Frameworks */,
-				1E8442041A3F052300E91382 /* CoreLocation.framework in Frameworks */,
-				1E8442051A3F052300E91382 /* AssetsLibrary.framework in Frameworks */,
-				1E8442061A3F052300E91382 /* AddressBook.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -185,14 +150,6 @@
 		1E0BB4F519F709E300877208 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				1E8441F71A3F052300E91382 /* SystemConfiguration.framework */,
-				1E8441F81A3F052300E91382 /* Security.framework */,
-				1E8441F91A3F052300E91382 /* MediaPlayer.framework */,
-				1E8441FA1A3F052300E91382 /* CoreText.framework */,
-				1E8441FB1A3F052300E91382 /* CoreMotion.framework */,
-				1E8441FC1A3F052300E91382 /* CoreLocation.framework */,
-				1E8441FD1A3F052300E91382 /* AssetsLibrary.framework */,
-				1E8441FE1A3F052300E91382 /* AddressBook.framework */,
 				1E0BB4F619F709E300877208 /* Foundation.framework */,
 				1E0BB4FA19F709E300877208 /* UIKit.framework */,
 			);
@@ -257,14 +214,11 @@
 			isa = PBXGroup;
 			children = (
 				1E8442091A3F056300E91382 /* AFNetworking */,
-				1E84421F1A3F056300E91382 /* GoogleSDK */,
 				1E8442251A3F056300E91382 /* OMHClient.h */,
 				1E8442261A3F056300E91382 /* OMHClientDSUConnector.h */,
 				1E8442271A3F056300E91382 /* OMHClientDSUConnector.m */,
 				1E8442281A3F056300E91382 /* OMHDataPoint.h */,
 				1E8442291A3F056300E91382 /* OMHDataPoint.m */,
-				1EE737E61A8508E9008913E0 /* OMHApplication.h */,
-				1EE737E71A8508E9008913E0 /* OMHApplication.m */,
 			);
 			path = OMHClient;
 			sourceTree = "<group>";
@@ -295,16 +249,6 @@
 				1E84421E1A3F056300E91382 /* AFURLSessionManager.m */,
 			);
 			path = AFNetworking;
-			sourceTree = "<group>";
-		};
-		1E84421F1A3F056300E91382 /* GoogleSDK */ = {
-			isa = PBXGroup;
-			children = (
-				1E8442201A3F056300E91382 /* GoogleOpenSource.framework */,
-				1E8442211A3F056300E91382 /* GooglePlus.bundle */,
-				1E8442221A3F056300E91382 /* GooglePlus.framework */,
-			);
-			path = GoogleSDK;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -386,7 +330,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1E0BB50119F709E300877208 /* InfoPlist.strings in Resources */,
-				1E8442361A3F056300E91382 /* GooglePlus.bundle in Resources */,
 				1E0BB50919F709E300877208 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -421,7 +364,6 @@
 				1E8442301A3F056300E91382 /* AFSecurityPolicy.m in Sources */,
 				1E8442391A3F056300E91382 /* OMHClientDSUConnector.m in Sources */,
 				1EB1AE251A20BB7100FEFA1F /* UIView+AutoLayoutHelpers.m in Sources */,
-				1EE737E81A8508E9008913E0 /* OMHApplication.m in Sources */,
 				1E8442321A3F056300E91382 /* AFURLRequestSerialization.m in Sources */,
 				1E84422F1A3F056300E91382 /* AFNetworkReachabilityManager.m in Sources */,
 				1E8442331A3F056300E91382 /* AFURLResponseSerialization.m in Sources */,
@@ -566,6 +508,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SDKROOT = iphoneos7.1;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -593,6 +536,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SDKROOT = iphoneos7.1;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
