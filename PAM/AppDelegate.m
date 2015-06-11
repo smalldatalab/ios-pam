@@ -12,6 +12,10 @@
 #import "OMHClient.h"
 #import "AppConstants.h"
 
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
+
+
 @interface AppDelegate ()
 
 @property (nonatomic, strong) LoginViewController *loginViewController;
@@ -22,6 +26,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [Fabric with:@[CrashlyticsKit]];
+
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
     [OMHClient setupClientWithClientID:kPAMDSUClientID clientSecret:kPAMDSUClientSecret];

@@ -19,6 +19,8 @@
 		1E0BB51C19F709E300877208 /* PAMTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E0BB51B19F709E300877208 /* PAMTests.m */; };
 		1E0BB52A19F70D6F00877208 /* PAMViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E0BB52919F70D6F00877208 /* PAMViewController.m */; };
 		1E3D872C1A6532110049F0CD /* AppConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E3D872B1A6532110049F0CD /* AppConstants.m */; };
+		1E55C5671B29A1F500082273 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E55C5651B29A1F500082273 /* Crashlytics.framework */; };
+		1E55C5681B29A1F500082273 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E55C5661B29A1F500082273 /* Fabric.framework */; };
 		1E6F83BC1A24A0E700BACC0F /* ReminderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E6F83BB1A24A0E700BACC0F /* ReminderViewController.m */; };
 		1E84422B1A3F056300E91382 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E84420B1A3F056300E91382 /* AFHTTPRequestOperation.m */; };
 		1E84422C1A3F056300E91382 /* AFHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E84420D1A3F056300E91382 /* AFHTTPRequestOperationManager.m */; };
@@ -67,6 +69,8 @@
 		1E0BB52919F70D6F00877208 /* PAMViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PAMViewController.m; sourceTree = "<group>"; };
 		1E3D872A1A6532110049F0CD /* AppConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppConstants.h; sourceTree = "<group>"; };
 		1E3D872B1A6532110049F0CD /* AppConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppConstants.m; sourceTree = "<group>"; };
+		1E55C5651B29A1F500082273 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Crashlytics.framework; path = external/Crashlytics.framework; sourceTree = "<group>"; };
+		1E55C5661B29A1F500082273 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Fabric.framework; path = external/Fabric.framework; sourceTree = "<group>"; };
 		1E6F83BA1A24A0E700BACC0F /* ReminderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReminderViewController.h; sourceTree = "<group>"; };
 		1E6F83BB1A24A0E700BACC0F /* ReminderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReminderViewController.m; sourceTree = "<group>"; };
 		1E84420A1A3F056300E91382 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
@@ -111,7 +115,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				1E0BB4FB19F709E300877208 /* UIKit.framework in Frameworks */,
+				1E55C5671B29A1F500082273 /* Crashlytics.framework in Frameworks */,
 				1E0BB4F719F709E300877208 /* Foundation.framework in Frameworks */,
+				1E55C5681B29A1F500082273 /* Fabric.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -150,6 +156,8 @@
 		1E0BB4F519F709E300877208 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1E55C5651B29A1F500082273 /* Crashlytics.framework */,
+				1E55C5661B29A1F500082273 /* Fabric.framework */,
 				1E0BB4F619F709E300877208 /* Foundation.framework */,
 				1E0BB4FA19F709E300877208 /* UIKit.framework */,
 			);
@@ -261,6 +269,7 @@
 				1E0BB4EF19F709E300877208 /* Sources */,
 				1E0BB4F019F709E300877208 /* Frameworks */,
 				1E0BB4F119F709E300877208 /* Resources */,
+				1E55C5601B299FDA00082273 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -343,6 +352,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		1E55C5601B299FDA00082273 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./external/Fabric.framework/run 9e374b1b5bf08074d78da492850342b98bf183ff b963218436a3cba91f2e27ba4aa81284d8ae01b911acc22e811ee2042af65c96";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1E0BB4EF19F709E300877208 /* Sources */ = {
@@ -490,10 +515,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/OMHClient/OMHClient\\ Framework",
-					"$(PROJECT_DIR)/OMHClient/OMHClient",
-					Framework,
-					"$(PROJECT_DIR)/OMHClient/GoogleSDK",
+					"$(PROJECT_DIR)/external",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PAM/PAM-Prefix.pch";
@@ -508,7 +530,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				SDKROOT = iphoneos7.1;
+				SDKROOT = iphoneos8.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -523,10 +545,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/OMHClient/OMHClient\\ Framework",
-					"$(PROJECT_DIR)/OMHClient/OMHClient",
-					Framework,
-					"$(PROJECT_DIR)/OMHClient/GoogleSDK",
+					"$(PROJECT_DIR)/external",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PAM/PAM-Prefix.pch";
@@ -536,7 +555,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				SDKROOT = iphoneos7.1;
+				SDKROOT = iphoneos8.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
