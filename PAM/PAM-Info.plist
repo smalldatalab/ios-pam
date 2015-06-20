@@ -9,7 +9,7 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIdentifier</key>
-	<string>io.smalldatalab.pam</string>
+	<string>io.smalldatalab.pam-internal</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -26,10 +26,10 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>io.smalldatalab.pam</string>
+			<string>io.smalldatalab.pam-internal</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>io.smalldatalab.pam</string>
+				<string>io.smalldatalab.pam-internal</string>
 			</array>
 		</dict>
 	</array>
