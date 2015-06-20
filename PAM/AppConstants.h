@@ -12,13 +12,14 @@
 /**
  *  DSU Sign-in keys
  */
-extern NSString * const kPAMGoogleClientID;
+//extern NSString * const kPAMGoogleClientID;
 extern NSString * const kOMHServerGoogleClientID;
 extern NSString * const kPAMDSUClientID;
 extern NSString * const kPAMDSUClientSecret;
 
 @interface AppConstants : NSObject
 
++ (NSString *)PAMGoogleClientID;
 + (OMHSchemaID *)pamSchemaID;
 + (OMHAcquisitionProvenance *)pamAcquisitionProvenance;
 

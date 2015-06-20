@@ -30,7 +30,7 @@
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
-    [OMHClient setupClientWithAppGoogleClientID:kPAMGoogleClientID
+    [OMHClient setupClientWithAppGoogleClientID:[AppConstants PAMGoogleClientID]
                            serverGoogleClientID:kOMHServerGoogleClientID
                                  appDSUClientID:kPAMDSUClientID
                              appDSUClientSecret:kPAMDSUClientSecret];
