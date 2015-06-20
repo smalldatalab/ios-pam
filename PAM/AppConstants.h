@@ -12,6 +12,8 @@
 /**
  *  DSU Sign-in keys
  */
+extern NSString * const kPAMGoogleClientID;
+extern NSString * const kOMHServerGoogleClientID;
 extern NSString * const kPAMDSUClientID;
 extern NSString * const kPAMDSUClientSecret;
 
