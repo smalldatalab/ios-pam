@@ -13,7 +13,7 @@
 		<key>091E09210FD78AFBF90DE870FC06BC93C5CC870D</key>
 		<string>https://github.com/smalldatalab/ios-pam.git</string>
 		<key>6918CDE7BC87254145CB7880A0E0CA7B4D7DD71C</key>
-		<string>https://github.com/cforkish/OMHClient.git</string>
+		<string>https://github.com/smalldatalab/ios-omh-dsu-client-lib.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>PAM.xcodeproj</string>
