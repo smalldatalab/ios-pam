@@ -16,9 +16,10 @@
 #import <Crashlytics/Crashlytics.h>
 
 
-@interface AppDelegate ()
+@interface AppDelegate () <OMHSignInDelegate>
 
 @property (nonatomic, strong) LoginViewController *loginViewController;
+@property (nonatomic, strong) UINavigationController *navigationController;
 
 @end
 
@@ -41,9 +42,8 @@
         root = self.loginViewController;
     }
     else {
-        PAMViewController *pvc = [[PAMViewController alloc] init];
-        UINavigationController *navcon = [[UINavigationController alloc] initWithRootViewController:pvc];
-        root = navcon;
+        root = self.navigationController;
+        [OMHClient sharedClient].signInDelegate = self;
     }
     
     self.window.rootViewController = root;
@@ -54,13 +54,50 @@
     return YES;
 }
 
+- (LoginViewController *)loginViewController
+{
+    if (_loginViewController == nil) {
+        _loginViewController = [[LoginViewController alloc] init];
+    }
+    return _loginViewController;
+}
+
+- (UINavigationController *)navigationController
+{
+    if (_navigationController == nil) {
+        PAMViewController *pvc = [[PAMViewController alloc] init];
+        UINavigationController *navcon = [[UINavigationController alloc] initWithRootViewController:pvc];
+        _navigationController = navcon;
+    }
+    return _navigationController;
+}
+
 - (void)userDidLogin
 {
-    PAMViewController *pvc = [[PAMViewController alloc] init];
-    UINavigationController *navcon = [[UINavigationController alloc] initWithRootViewController:pvc];
-    [UIView transitionFromView:self.loginViewController.view toView:navcon.view duration:0.35 options:UIViewAnimationOptionTransitionCrossDissolve completion:^(BOOL finished) {
-        self.window.rootViewController = navcon;
+    UINavigationController *newRoot = self.navigationController;
+    [UIView transitionFromView:self.loginViewController.view toView:newRoot.view duration:0.35 options:UIViewAnimationOptionTransitionCrossDissolve completion:^(BOOL finished) {
+        self.window.rootViewController = newRoot;
         self.loginViewController = nil;
+    }];
+}
+
+
+- (void)userDidLogout
+{
+    LoginViewController *newRoot = self.loginViewController;
+    
+    UIView *fromView = nil;
+    if (self.navigationController.topViewController.presentedViewController != nil) {
+        fromView = self.navigationController.topViewController.presentedViewController.view;
+    }
+    else {
+        fromView = self.navigationController.view;
+    }
+    
+    [UIView transitionFromView:fromView toView:newRoot.view duration:0.35 options:UIViewAnimationOptionTransitionCrossDissolve completion:^(BOOL finished) {
+        NSLog(@"finished:  %d", finished);
+        self.window.rootViewController = newRoot;
+        self.navigationController = nil;
     }];
 }
 
@@ -103,6 +140,20 @@
                              sourceApplication:sourceApplication
                                     annotation:annotation];
 }
+
+
+#pragma mark - OMHSignInDelegate
+
+- (void)OMHClient:(OMHClient *)client signInFinishedWithError:(NSError *)error
+{
+    if (error != nil) {
+        [self userDidLogout];
+    }
+}
+
+- (void)OMHClientSignInCancelled:(OMHClient *)client {}
+- (void)presentViewController:(UIViewController *)viewControllerToPresent animated:(BOOL)flag completion:(void (^)(void))completion {}
+- (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion {}
 
 
 

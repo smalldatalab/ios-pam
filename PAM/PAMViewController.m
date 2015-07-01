@@ -13,6 +13,7 @@
 #import "ReminderViewController.h"
 #import "OMHClient.h"
 #import "AppConstants.h"
+#import "AppDelegate.h"
 
 #define NUM_ROWS 4
 #define NUM_COLS 4
@@ -240,7 +241,7 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
 - (void)logout
 {
     [[OMHClient sharedClient] signOut];
-    [self presentViewController:[[LoginViewController alloc] init] animated:YES completion:nil];
+    [(AppDelegate *)[UIApplication sharedApplication].delegate userDidLogout];
 }
 
 
