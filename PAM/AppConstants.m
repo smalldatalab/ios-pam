@@ -10,7 +10,6 @@
 
 //NSString * const kPAMGoogleClientID = @"48636836762-ecjbb4s0sd9k7p4terdmbjo0o9kqa2q5.apps.googleusercontent.com"; // "-internal" bundle ID
 //NSString * const kPAMGoogleClientID = @"48636836762-qoanqnl8p1f9kvng9ec7jbf4ui73ivak.apps.googleusercontent.com"; // plain bundle ID
-NSString * const kOMHServerGoogleClientID = @"48636836762-mulldgpmet2r4s3f16s931ea9crcc64m.apps.googleusercontent.com";
 NSString * const kPAMDSUClientID = @"org.openmhealth.ios.pam";
 NSString * const kPAMDSUClientSecret = @"Rtg43jkLD7z76c";
 

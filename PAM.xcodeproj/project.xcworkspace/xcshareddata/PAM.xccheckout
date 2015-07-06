@@ -22,7 +22,7 @@
 		<key>091E09210FD78AFBF90DE870FC06BC93C5CC870D</key>
 		<string>../..</string>
 		<key>6918CDE7BC87254145CB7880A0E0CA7B4D7DD71C</key>
-		<string>../..OMHClient</string>
+		<string>../..OMHClient/</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/smalldatalab/ios-pam.git</string>
@@ -36,17 +36,17 @@
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>091E09210FD78AFBF90DE870FC06BC93C5CC870D</string>
+			<string>6918CDE7BC87254145CB7880A0E0CA7B4D7DD71C</string>
 			<key>IDESourceControlWCCName</key>
-			<string>PAM</string>
+			<string>OMHClient</string>
 		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>6918CDE7BC87254145CB7880A0E0CA7B4D7DD71C</string>
+			<string>091E09210FD78AFBF90DE870FC06BC93C5CC870D</string>
 			<key>IDESourceControlWCCName</key>
-			<string>PAMOMHClient</string>
+			<string>PAM</string>
 		</dict>
 	</array>
 </dict>

@@ -32,7 +32,6 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
     [OMHClient setupClientWithAppGoogleClientID:[AppConstants PAMGoogleClientID]
-                           serverGoogleClientID:kOMHServerGoogleClientID
                                  appDSUClientID:kPAMDSUClientID
                              appDSUClientSecret:kPAMDSUClientSecret];
     
@@ -95,7 +94,6 @@
     }
     
     [UIView transitionFromView:fromView toView:newRoot.view duration:0.35 options:UIViewAnimationOptionTransitionCrossDissolve completion:^(BOOL finished) {
-        NSLog(@"finished:  %d", finished);
         self.window.rootViewController = newRoot;
         self.navigationController = nil;
     }];
