@@ -79,12 +79,16 @@
     self.navigationController.toolbarHidden = NO;
     self.resetButton = resetButton;
     resetButton.enabled = ![self.textField.text isEqualToString:[OMHClient defaultDSUBaseURL]];
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backgroundTapped:)];
+    tap.cancelsTouchesInView = NO;
+    [self.view addGestureRecognizer:tap];
 }
 
 - (void)resetURL
 {
     self.textField.text = [OMHClient defaultDSUBaseURL];
-    self.navigationItem.rightBarButtonItem.enabled = YES;
+    [self updateButtonStates];
 }
 
 - (void)doneButtonPressed:(id)sender
@@ -107,22 +111,37 @@
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)textFieldDidEndEditing:(UITextField *)textField
+- (void)backgroundTapped:(id)sender
 {
-    if (textField.text.length > 0) {
-        if (![textField.text isEqualToString:[OMHClient DSUBaseURL]]) {
-            self.navigationItem.rightBarButtonItem.enabled = YES;
-        }
-        if ([textField.text isEqualToString:[OMHClient defaultDSUBaseURL]]) {
-            self.resetButton.enabled = NO;
-        }
-        else {
-            self.resetButton.enabled = YES;
-        }
+    [self.view endEditing:YES];
+}
+
+
+#pragma mark - TextFieldDelegate
+
+- (void)updateButtonStates
+{
+    self.navigationItem.rightBarButtonItem.enabled = ![self.textField.text isEqualToString:[OMHClient DSUBaseURL]];
+    if ([self.textField.text isEqualToString:[OMHClient defaultDSUBaseURL]]) {
+        self.resetButton.enabled = NO;
     }
     else {
+        self.resetButton.enabled = YES;
+    }
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    [self performSelector:@selector(updateButtonStates) withObject:nil afterDelay:0.01];
+    return YES;
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+    if (textField.text.length == 0) {
         textField.text = [OMHClient DSUBaseURL];
     }
+    [self updateButtonStates];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -138,7 +157,5 @@
         [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
     }
 }
-
-
 
 @end
