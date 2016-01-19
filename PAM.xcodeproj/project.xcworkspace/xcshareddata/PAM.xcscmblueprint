@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "091E09210FD78AFBF90DE870FC06BC93C5CC870D",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "6918CDE7BC87254145CB7880A0E0CA7B4D7DD71C" : 0,
+    "091E09210FD78AFBF90DE870FC06BC93C5CC870D" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "98B969DE-BB45-458C-9323-025DD43D5C8B",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "6918CDE7BC87254145CB7880A0E0CA7B4D7DD71C" : "PAMOMHClient",
+    "091E09210FD78AFBF90DE870FC06BC93C5CC870D" : "PAM"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "PAM",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "PAM.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/smalldatalab\/ios-pam.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "091E09210FD78AFBF90DE870FC06BC93C5CC870D"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/smalldatalab\/ios-omh-dsu-client-lib.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "6918CDE7BC87254145CB7880A0E0CA7B4D7DD71C"
+    }
+  ]
+}
