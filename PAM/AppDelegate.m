@@ -11,6 +11,7 @@
 #import "LoginViewController.h"
 #import "OMHClient.h"
 #import "AppConstants.h"
+#import "ReminderManager.h"
 
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
@@ -122,6 +123,8 @@
 //    [self.window.rootViewController presentViewController:[[LoginViewController alloc] init]
 //                                                 animated:NO
 //                                               completion:nil];
+    [[ReminderManager sharedReminderManager] synchronizeNotifications];
+    
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application

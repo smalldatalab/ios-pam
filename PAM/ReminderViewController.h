@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+@class Reminder;
+
 @interface ReminderViewController : UITableViewController
+
+- (instancetype)initWithReminder:(Reminder *)reminder;
 
 @end

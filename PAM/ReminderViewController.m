@@ -8,21 +8,36 @@
 
 #import "ReminderViewController.h"
 #import "UIView+AutoLayoutHelpers.h"
+#import "Reminder.h"
+#import "ReminderDaysViewController.h"
+#import "ReminderManager.h"
 
-static NSString * const kHasRequestedPermissionKey = @"HAS_REQUESTED_PERMISSION";
 
-@interface ReminderViewController () <UIAlertViewDelegate>
+@interface ReminderViewController ()<UIAlertViewDelegate>
 
 @property (nonatomic, strong) UISwitch *enabledSwitch;
 @property (nonatomic, strong) UIDatePicker *timePicker;
+@property (nonatomic, strong) Reminder *reminder;
+@property (nonatomic, strong) Reminder *tempReminder;
 
 @end
 
 @implementation ReminderViewController
 
-- (instancetype)init
+- (instancetype)initWithReminder:(Reminder *)reminder
 {
-    return [super initWithStyle:UITableViewStyleGrouped];
+    self = [super initWithStyle:UITableViewStyleGrouped];
+    if (self) {
+        self.reminder = reminder;
+        self.tempReminder = [reminder copy];
+//        if (reminder.isNew) {
+//            self.reminder = reminder;
+//        }
+//        else {
+//            self.reminder = [reminder copy];
+//        }
+    }
+    return self;
 }
 
 - (void)viewDidLoad {
@@ -31,113 +46,131 @@ static NSString * const kHasRequestedPermissionKey = @"HAS_REQUESTED_PERMISSION"
     UIColor* bgColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"ipad-BG-pattern"]];
     [self.view setBackgroundColor:bgColor];
     
-    self.title = @"Daily Reminder";
+    if (self.reminder.isNew) {
+        self.title = @"New Reminder";
+    }
+    else {
+        self.title = @"Edit Reminder";
+    }
     
-    UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneButtonPressed:)];
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+    self.navigationItem.backBarButtonItem = backButton;
+    
+    UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(doneButtonPressed:)];
     self.navigationItem.rightBarButtonItem = doneButton;
+    
+    UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelButtonPressed:)];
+    self.navigationItem.leftBarButtonItem = cancelButton;
     
     UIDatePicker *dp = [[UIDatePicker alloc] init];
     dp.backgroundColor = [UIColor whiteColor];
     dp.datePickerMode = UIDatePickerModeTime;
+    dp.date = self.reminder.localTime;
     [dp addTarget:self action:@selector(timePickerValueChanged:) forControlEvents:UIControlEventValueChanged];
     self.timePicker = dp;
     self.tableView.tableHeaderView = dp;
     
-    [self debugPrintAllNotifications];
-}
-
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    
-    if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
-        [self requestNotificationPermissions];
+    if (!self.reminder.isNew) {
+        [self setupFooter];
     }
 }
 
-- (void)requestNotificationPermissions
-{
-    UIUserNotificationSettings *settings = [UIApplication sharedApplication].currentUserNotificationSettings;
-    NSLog(@"settings: %@", settings);
-    if ((settings.types & UIUserNotificationTypeAlert)) return;
+- (void)setupFooter {
+    CGSize buttonSize = CGSizeMake(self.tableView.frame.size.width - 30, 44);
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+    [button addTarget:self action:@selector(deleteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    [button setTitle:@"Delete Reminder" forState:UIControlStateNormal];
+    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [button constrainSize:buttonSize];
+    button.backgroundColor = [self lightColor: [UIColor redColor]];
     
-    NSString *title;
-    NSString *message;
-    BOOL hasRequested = [[NSUserDefaults standardUserDefaults] boolForKey:kHasRequestedPermissionKey];
+    CGRect buttonFrame = button.frame;
     
-    if (!hasRequested) {
-        title = @"Reminder Permissions";
-        message = @"To deliver reminders, PAM needs permission to display notifications. Please allow notifications for PAM.";
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kHasRequestedPermissionKey];
-    }
-    else {
-        title = @"Insufficient Permissions";
-        message = @"To deliver reminders, PAM needs permission to display notifications. Please enable notifications for PAM in your device settings.";
-
-    }
+    CGRect footerFrame = CGRectMake(0, 0, self.tableView.frame.size.width, buttonFrame.size.height + 30);
+    UIView *footerView = [[UIView alloc] initWithFrame:footerFrame];
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
-                                                    message:message
-                                                   delegate:nil
-                                          cancelButtonTitle:@"OK"
-                                          otherButtonTitles:nil];
-    alert.delegate = self;
-    [alert show];
+    [footerView addSubview:button];
+    [button centerHorizontallyInView:footerView];
+    [button centerVerticallyInView:footerView];
+    self.tableView.tableFooterView = footerView;
 }
 
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+- (UIColor *)lightColor:(UIColor *)color
 {
-    NSLog(@"alert view did dismiss");
-    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeSound categories:nil];
-    [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+    CGFloat h, s, b, a;
+    if ([color getHue:&h saturation:&s brightness:&b alpha:&a])
+        return [UIColor colorWithHue:h
+                          saturation:s * 0.5
+                          brightness:MIN(b * 1.2, 1.0)
+                               alpha:a];
+    return nil;
 }
 
-#endif
-
-- (BOOL)hasReminder
+- (void)viewWillAppear:(BOOL)animated
 {
-    return ([UIApplication sharedApplication].scheduledLocalNotifications.count > 0);
+    [super viewWillAppear:animated];
+    [self.tableView reloadData];
 }
 
-- (void)updateReminder
-{
-    [[UIApplication sharedApplication] cancelAllLocalNotifications];
-    
-    if (self.enabledSwitch.on) {
-        UILocalNotification *notification = [[UILocalNotification alloc] init];
-        NSString *alertBody = @"Daily reminder to log how you feel.";
-        
-        notification.alertBody = alertBody;
-        notification.fireDate = self.timePicker.date;
-        notification.repeatInterval = NSCalendarUnitDay;
-        notification.soundName = UILocalNotificationDefaultSoundName;
-        notification.timeZone = [NSTimeZone defaultTimeZone];
-        
-        [[UIApplication sharedApplication] scheduleLocalNotification:notification];
-    }
-    
-    [self debugPrintAllNotifications];
-}
 
-- (void)debugPrintAllNotifications
-{
-    NSArray *notes = [UIApplication sharedApplication].scheduledLocalNotifications;
-    NSLog( @"enabled: %d, notifications: %d", self.enabledSwitch.on, (int)notes.count);
-    for (UILocalNotification *note in notes) {
-        NSLog(@"notification: %@", note);
-    }
-}
+
+//- (void)updateReminder
+//{
+//    [[UIApplication sharedApplication] cancelAllLocalNotifications];
+//    
+//    if (self.enabledSwitch.on) {
+//        UILocalNotification *notification = [[UILocalNotification alloc] init];
+//        NSString *alertBody = @"Daily reminder to log how you feel.";
+//        
+//        notification.alertBody = alertBody;
+//        notification.fireDate = self.timePicker.date;
+//        notification.repeatInterval = NSCalendarUnitDay;
+//        notification.soundName = UILocalNotificationDefaultSoundName;
+//        notification.timeZone = [NSTimeZone defaultTimeZone];
+//        
+//        [[UIApplication sharedApplication] scheduleLocalNotification:notification];
+//    }
+//    
+//    [self debugPrintAllNotifications];
+//}
 
 - (void)doneButtonPressed:(id)sender
 {
-    [self updateReminder];
-    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+//    [self updateReminder];
+    self.reminder.enabled = self.enabledSwitch.on;
+    self.reminder.weekdaysMask = self.tempReminder.weekdaysMask;
+    self.reminder.localTime = self.timePicker.date;
+    [[ReminderManager sharedReminderManager] saveReminder:self.reminder];
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)cancelButtonPressed:(id)sender
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)deleteButtonPressed {
+    UIAlertView *confirmAlert = [[UIAlertView alloc] initWithTitle:@"Delete reminder?"
+                                                           message:@"Are you sure you want to delete this reminder?"
+                                                          delegate:self
+                                                 cancelButtonTitle:@"Cancel"
+                                                 otherButtonTitles:@"Delete", nil];
+    [confirmAlert show];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    NSLog(@"alert view clicked button at index: %ld", buttonIndex);
+    if (buttonIndex == 1) {
+        [[ReminderManager sharedReminderManager] deleteReminder:self.reminder];
+        [self.navigationController popViewControllerAnimated:YES];
+    }
 }
 
 - (void)timePickerValueChanged:(id)sender
 {
-    self.enabledSwitch.on = YES;
+    [self.enabledSwitch setOn:YES animated:YES];
+    self.tempReminder.enabled = YES;
 }
 
 #pragma mark - Table View
@@ -149,20 +182,40 @@ static NSString * const kHasRequestedPermissionKey = @"HAS_REQUESTED_PERMISSION"
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 1;
+    return 2;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
-    cell.textLabel.text = @"Enabled";
     
-    UISwitch *sw = [[UISwitch alloc] init];
-    sw.on = [self hasReminder];
-    cell.accessoryView = sw;
-    self.enabledSwitch = sw;
+    UITableViewCell *cell;
+    if (indexPath.row == 0) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:nil];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.textLabel.text = @"Repeats";
+        cell.detailTextLabel.text = [self.tempReminder repeatLabelText];
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }
+    else {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.textLabel.text = @"Enabled";
+        
+        UISwitch *sw = [[UISwitch alloc] init];
+        sw.on = self.tempReminder.enabled;
+        cell.accessoryView = sw;
+        self.enabledSwitch = sw;
+    }
     
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.row == 0) {
+        ReminderDaysViewController *vc = [[ReminderDaysViewController alloc] initWithReminder:self.tempReminder];
+        [self.navigationController pushViewController:vc animated:YES];
+    }
 }
 
 

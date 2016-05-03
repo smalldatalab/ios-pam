@@ -4,11 +4,13 @@
 
   },
   "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "D12BC5674799CD7B513231CBB3CD540CA801BF06" : 0,
     "6918CDE7BC87254145CB7880A0E0CA7B4D7DD71C" : 0,
     "091E09210FD78AFBF90DE870FC06BC93C5CC870D" : 0
   },
   "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "98B969DE-BB45-458C-9323-025DD43D5C8B",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "D12BC5674799CD7B513231CBB3CD540CA801BF06" : "..\/VA\/CPT2",
     "6918CDE7BC87254145CB7880A0E0CA7B4D7DD71C" : "PAMOMHClient",
     "091E09210FD78AFBF90DE870FC06BC93C5CC870D" : "PAM"
   },
@@ -25,6 +27,11 @@
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/smalldatalab\/ios-omh-dsu-client-lib.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "6918CDE7BC87254145CB7880A0E0CA7B4D7DD71C"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/mentalhealth\/cptcoach-ios.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "D12BC5674799CD7B513231CBB3CD540CA801BF06"
     }
   ]
 }

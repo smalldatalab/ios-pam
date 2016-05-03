@@ -10,7 +10,7 @@
 #import "PAMImageCell.h"
 #import "UIView+AutoLayoutHelpers.h"
 #import "LoginViewController.h"
-#import "ReminderViewController.h"
+#import "ReminderTableViewController.h"
 #import "OMHClient.h"
 #import "AppConstants.h"
 #import "AppDelegate.h"
@@ -52,10 +52,10 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
                                                                     target:self
                                                                     action:@selector(logout)];
     
-    UIBarButtonItem *reminderButton = [[UIBarButtonItem alloc] initWithTitle:@"Reminder"
+    UIBarButtonItem *reminderButton = [[UIBarButtonItem alloc] initWithTitle:@"Reminders"
                                                                  style:UIBarButtonItemStylePlain
                                                                 target:self
-                                                                action:@selector(presentReminderViewController)];
+                                                                action:@selector(presentReminderTableViewController)];
     self.logoutButton = logoutButton;
     
     self.navigationItem.leftBarButtonItem = logoutButton;
@@ -132,9 +132,9 @@ NSString * const kLastSubmitDateKey = @"lastSubmitDate";
     return [dateFormatter stringFromDate:date];
 }
 
-- (void)presentReminderViewController
+- (void)presentReminderTableViewController
 {
-    ReminderViewController *vc = [[ReminderViewController alloc] init];
+    ReminderTableViewController *vc = [[ReminderTableViewController alloc] init];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
     [self presentViewController:nav animated:YES completion:nil];
 }

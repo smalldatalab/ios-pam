@@ -46,6 +46,11 @@
 		1E8442341A3F056300E91382 /* AFURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E84421E1A3F056300E91382 /* AFURLSessionManager.m */; };
 		1E8442391A3F056300E91382 /* OMHClientDSUConnector.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E8442271A3F056300E91382 /* OMHClientDSUConnector.m */; };
 		1E84423A1A3F056300E91382 /* OMHDataPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E8442291A3F056300E91382 /* OMHDataPoint.m */; };
+		1EAC62E21CC3313E00B4D650 /* ReminderTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EAC62E11CC3313E00B4D650 /* ReminderTableViewController.m */; };
+		1EAC62E51CC3316F00B4D650 /* ReminderManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EAC62E41CC3316F00B4D650 /* ReminderManager.m */; };
+		1EAC62E81CC333AE00B4D650 /* Reminder.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EAC62E71CC333AE00B4D650 /* Reminder.m */; };
+		1EAC62EE1CC336C000B4D650 /* NSDate+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EAC62ED1CC336C000B4D650 /* NSDate+Additions.m */; };
+		1EAC62F51CC48AB000B4D650 /* ReminderDaysViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EAC62F41CC48AB000B4D650 /* ReminderDaysViewController.m */; };
 		1EB1AE251A20BB7100FEFA1F /* UIView+AutoLayoutHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB1AE241A20BB7100FEFA1F /* UIView+AutoLayoutHelpers.m */; };
 		1EB1AE281A20F38200FEFA1F /* PAMImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB1AE271A20F38200FEFA1F /* PAMImageCell.m */; };
 		1EB2C40F1A22318000DC1A06 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB2C40E1A22318000DC1A06 /* LoginViewController.m */; };
@@ -124,6 +129,16 @@
 		1E8442271A3F056300E91382 /* OMHClientDSUConnector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OMHClientDSUConnector.m; sourceTree = "<group>"; };
 		1E8442281A3F056300E91382 /* OMHDataPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OMHDataPoint.h; sourceTree = "<group>"; };
 		1E8442291A3F056300E91382 /* OMHDataPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OMHDataPoint.m; sourceTree = "<group>"; };
+		1EAC62E01CC3313E00B4D650 /* ReminderTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReminderTableViewController.h; sourceTree = "<group>"; };
+		1EAC62E11CC3313E00B4D650 /* ReminderTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReminderTableViewController.m; sourceTree = "<group>"; };
+		1EAC62E31CC3316F00B4D650 /* ReminderManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReminderManager.h; sourceTree = "<group>"; };
+		1EAC62E41CC3316F00B4D650 /* ReminderManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReminderManager.m; sourceTree = "<group>"; };
+		1EAC62E61CC333AE00B4D650 /* Reminder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reminder.h; sourceTree = "<group>"; };
+		1EAC62E71CC333AE00B4D650 /* Reminder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reminder.m; sourceTree = "<group>"; };
+		1EAC62EC1CC336C000B4D650 /* NSDate+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Additions.h"; sourceTree = "<group>"; };
+		1EAC62ED1CC336C000B4D650 /* NSDate+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Additions.m"; sourceTree = "<group>"; };
+		1EAC62F31CC48AB000B4D650 /* ReminderDaysViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReminderDaysViewController.h; sourceTree = "<group>"; };
+		1EAC62F41CC48AB000B4D650 /* ReminderDaysViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReminderDaysViewController.m; sourceTree = "<group>"; };
 		1EB1AE231A20BB7100FEFA1F /* UIView+AutoLayoutHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+AutoLayoutHelpers.h"; sourceTree = "<group>"; };
 		1EB1AE241A20BB7100FEFA1F /* UIView+AutoLayoutHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+AutoLayoutHelpers.m"; sourceTree = "<group>"; };
 		1EB1AE261A20F38200FEFA1F /* PAMImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PAMImageCell.h; sourceTree = "<group>"; };
@@ -218,14 +233,15 @@
 				1EB2C40E1A22318000DC1A06 /* LoginViewController.m */,
 				1EF853D61A909A7900A0E631 /* DSUURLViewController.h */,
 				1EF853D71A909A7900A0E631 /* DSUURLViewController.m */,
-				1E6F83BA1A24A0E700BACC0F /* ReminderViewController.h */,
-				1E6F83BB1A24A0E700BACC0F /* ReminderViewController.m */,
+				1EAC62F21CC423BA00B4D650 /* Reminders */,
 				1E0BB52819F70D6F00877208 /* PAMViewController.h */,
 				1E0BB52919F70D6F00877208 /* PAMViewController.m */,
 				1EB1AE261A20F38200FEFA1F /* PAMImageCell.h */,
 				1EB1AE271A20F38200FEFA1F /* PAMImageCell.m */,
 				1EB1AE231A20BB7100FEFA1F /* UIView+AutoLayoutHelpers.h */,
 				1EB1AE241A20BB7100FEFA1F /* UIView+AutoLayoutHelpers.m */,
+				1EAC62EC1CC336C000B4D650 /* NSDate+Additions.h */,
+				1EAC62ED1CC336C000B4D650 /* NSDate+Additions.m */,
 				1E0BB50819F709E300877208 /* Images.xcassets */,
 				1E0BB4FD19F709E300877208 /* Supporting Files */,
 			);
@@ -315,6 +331,23 @@
 			path = AFNetworking;
 			sourceTree = "<group>";
 		};
+		1EAC62F21CC423BA00B4D650 /* Reminders */ = {
+			isa = PBXGroup;
+			children = (
+				1EAC62E31CC3316F00B4D650 /* ReminderManager.h */,
+				1EAC62E41CC3316F00B4D650 /* ReminderManager.m */,
+				1EAC62E61CC333AE00B4D650 /* Reminder.h */,
+				1EAC62E71CC333AE00B4D650 /* Reminder.m */,
+				1EAC62E01CC3313E00B4D650 /* ReminderTableViewController.h */,
+				1EAC62E11CC3313E00B4D650 /* ReminderTableViewController.m */,
+				1E6F83BA1A24A0E700BACC0F /* ReminderViewController.h */,
+				1E6F83BB1A24A0E700BACC0F /* ReminderViewController.m */,
+				1EAC62F31CC48AB000B4D650 /* ReminderDaysViewController.h */,
+				1EAC62F41CC48AB000B4D650 /* ReminderDaysViewController.m */,
+			);
+			name = Reminders;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -364,7 +397,7 @@
 				ORGANIZATIONNAME = "Charlie Forkish";
 				TargetAttributes = {
 					1E0BB4F219F709E300877208 = {
-						DevelopmentTeam = 97CH99WN8D;
+						DevelopmentTeam = 62Q6KFJKEC;
 					};
 					1E0BB50D19F709E300877208 = {
 						TestTargetID = 1E0BB4F219F709E300877208;
@@ -443,15 +476,20 @@
 				1E84422B1A3F056300E91382 /* AFHTTPRequestOperation.m in Sources */,
 				1E6F83BC1A24A0E700BACC0F /* ReminderViewController.m in Sources */,
 				1E0BB50319F709E300877208 /* main.m in Sources */,
+				1EAC62E21CC3313E00B4D650 /* ReminderTableViewController.m in Sources */,
 				1E84422D1A3F056300E91382 /* AFHTTPSessionManager.m in Sources */,
 				1E8442301A3F056300E91382 /* AFSecurityPolicy.m in Sources */,
 				1E8442391A3F056300E91382 /* OMHClientDSUConnector.m in Sources */,
 				1EB1AE251A20BB7100FEFA1F /* UIView+AutoLayoutHelpers.m in Sources */,
 				1E8442321A3F056300E91382 /* AFURLRequestSerialization.m in Sources */,
 				1E84422F1A3F056300E91382 /* AFNetworkReachabilityManager.m in Sources */,
+				1EAC62F51CC48AB000B4D650 /* ReminderDaysViewController.m in Sources */,
 				1E8442331A3F056300E91382 /* AFURLResponseSerialization.m in Sources */,
 				1EF853D81A909A7900A0E631 /* DSUURLViewController.m in Sources */,
+				1EAC62E51CC3316F00B4D650 /* ReminderManager.m in Sources */,
 				1E84422C1A3F056300E91382 /* AFHTTPRequestOperationManager.m in Sources */,
+				1EAC62E81CC333AE00B4D650 /* Reminder.m in Sources */,
+				1EAC62EE1CC336C000B4D650 /* NSDate+Additions.m in Sources */,
 				1E3D872C1A6532110049F0CD /* AppConstants.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -531,8 +569,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: CORNELL University";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/external",
@@ -541,11 +580,12 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PAM/PAM-Prefix.pch";
 				INFOPLIST_FILE = "PAM/PAM-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = io.smalldatalab.pam;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "9b17cc84-696a-4abc-b3f4-40e6c8e88816";
 				SDKROOT = iphoneos8.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
@@ -647,6 +687,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/external",
@@ -660,11 +701,12 @@
 					"OMHDEBUG=1",
 				);
 				INFOPLIST_FILE = "PAM/PAM-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = io.smalldatalab.pam;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "9b17cc84-696a-4abc-b3f4-40e6c8e88816";
 				SDKROOT = iphoneos8.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
@@ -676,8 +718,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Deborah Estrin (97CH99WN8D)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Deborah Estrin (97CH99WN8D)";
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/external",
@@ -686,11 +729,12 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PAM/PAM-Prefix.pch";
 				INFOPLIST_FILE = "PAM/PAM-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = io.smalldatalab.pam;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "9b17cc84-696a-4abc-b3f4-40e6c8e88816";
 				SDKROOT = iphoneos8.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
